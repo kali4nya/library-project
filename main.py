@@ -4,6 +4,8 @@ from database.db import get_db, close_db
 from database.init_db import init_db
 from config import Config
 from classes.book import Book
+from classes.user import User
+from classes.library import Library
 
 app = Flask(__name__)
 app.secret_key = "oohhverysecretkey"
@@ -22,29 +24,29 @@ def teardown_appcontext(exception=None):
 
 @app.route('/')
 def home():
-    books = Book.get_all_books()
-    
+    books = Library.list_all_books()
     return render_template('index.html', books=books)
 
 @app.route('/create_book', methods=['POST'])
 def create_book():
-    """Create a new book in the database."""
     title = request.form['title']
     author = request.form['author']
-    release_year = request.form['release_year']
+    release_year = int(request.form['release_year'])
+    
+    new_book = Book(title=title, author=author, release_year=release_year)
+    new_book.save()
 
-    if not release_year:
-        return "Release year is required.", 400
-    try:
-        release_year = int(release_year)
-    except ValueError:
-        return "Invalid release year. Please enter a valid integer.", 400
-    try:
-        new_book = Book(title=title, author=author, release_year=release_year)
-        new_book.save()
-    except ValueError as e:
-        return str(e), 400  # If validation fails in the Book class, show the error message
+    return redirect(url_for('home'))
 
+@app.route('/create_user', methods=['POST'])
+def create_user():
+    name = request.form['name']
+    surname = request.form['surname']
+    
+    # Create the user and save to the database
+    new_user = User(name=name, surname=surname)
+    new_user.save()
+    
     return redirect(url_for('home'))
 
 if __name__ == '__main__':

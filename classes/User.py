@@ -18,45 +18,6 @@ class User:
         )
         db.commit()
         self.user_id = cursor.lastrowid  # id from sqlite
-    
-    def add_book(self, book_id):
-        """Allows user to borrow a book if they havent exceeded the limit."""
-        db = get_db()
-
-        # Count how many books the user has already borrowed
-        borrowed_count = db.execute(
-            'SELECT COUNT(*) FROM borrowed_books WHERE user_id = ?',
-            (self.user_id,)
-        ).fetchone()[0]
-
-        # Check if the limit is exceeded
-        if borrowed_count >= Config.BOOK_BORROW_LIMIT:
-            print(f"Borrowing limit reached! You cannot borrow more than {Config.BOOK_BORROW_LIMIT} books.")
-            return False
-
-        # Proceed with borrowing the book
-        db.execute(
-            'INSERT INTO borrowed_books (user_id, book_id) VALUES (?, ?)',
-            (self.user_id, book_id)
-        )
-        db.execute(
-            'UPDATE books SET available = 0 WHERE id = ?',
-            (book_id,)
-        )
-        db.commit()
-        
-        print(f"Book {book_id} successfully borrowed.")
-        return True
-
-        
-    def remove_book(self, book_id):
-        """ Remove a book from the user's borrowed list in the database. """
-        db = get_db()
-        db.execute(
-            'DELETE FROM borrowed_books WHERE user_id = ? AND book_id = ?',
-            (self.user_id, book_id)
-        )
-        db.commit()
         
     def get_by_id(user_id):
         """ Retrieve a user by their ID from the database. """

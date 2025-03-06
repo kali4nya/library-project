@@ -30,20 +30,6 @@ class Book:
         db.commit()
         self.available = available
     
-    def borrow_book(self):
-        """Marks the book as borrowed (if available)."""
-        if self.available:
-            self.update_availability(False)
-            return True
-        return False
-        
-    def return_book(self):
-        """Marks the book as available (if currently borrowed)."""
-        if not self.available:
-            self.update_availability(True)
-            return True
-        return False
-    
     @staticmethod
     def get_by_id(book_id):
         """Retrieve a book by its ID."""
@@ -58,26 +44,3 @@ class Book:
                 available=bool(book['available'])
             )
         return None
-    
-    @classmethod
-    def get_all_books(cls):
-        """Fetch all books from the database and return them as Book objects."""
-        db = get_db()
-        
-        # Fetch all books from the database
-        books_data = db.execute('SELECT * FROM books').fetchall()
-
-        # Convert each row (tuple) into a Book object
-        books = []
-        for book in books_data:
-            # Assuming your columns are: id, title, author, release_year, available
-            book_id = book[0]
-            title = book[1]
-            author = book[2]
-            release_year = book[3]
-            available = book[4]
-            
-            # Create a Book object for each row and add it to the list
-            books.append(cls(book_id=book_id, title=title, author=author, release_year=release_year, available=available))
-        
-        return books

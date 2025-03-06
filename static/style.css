@@ -1,9 +1,4 @@
-html {
-    scroll-behavior: smooth;
-}
-
 body {
-    padding: 0;
     scroll-behavior: smooth;
     font-family: "Noto Sans", serif;
     font-optical-sizing: auto;
@@ -12,4 +7,13 @@ body {
     font-variation-settings: "wdth" 100;
     background-color: #212121;
     color: white;
+}
+
+.wrapper {
+    display: flex;
+    gap: 7vw;
+}
+
+.container {
+    box-sizing: border-box; /* Prevents padding from affecting the width */
 }
