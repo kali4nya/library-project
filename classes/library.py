@@ -39,6 +39,15 @@ class Library:
         """Allows user to borrow a book if they haven't exceeded the limit and marks the book as borrowed."""
         db = get_db()
 
+        # Check if `user` is an ID (string), and if so, fetch the User object from the database
+        if isinstance(user, str):  # user is just the ID as string
+            user = User.get_by_id(user)  # assuming you have a method to get user by ID
+
+        # Now `user` is an actual User object
+        if not user:
+            print(f"User not found!")
+            return False
+
         borrowed_count = db.execute(
             'SELECT COUNT(*) FROM borrowed_books WHERE user_id = ?',
             (user.user_id,)
@@ -47,6 +56,7 @@ class Library:
         if borrowed_count >= Config.BOOK_BORROW_LIMIT:
             print(f"Borrowing limit reached! You cannot borrow more than {Config.BOOK_BORROW_LIMIT} books.")
             return False
+        
         book = Book.get_by_id(book_id)
         if not book:
             print(f"Book with ID {book_id} not found.")
@@ -62,13 +72,14 @@ class Library:
                 (user.user_id, book_id)
             )
             db.commit()
-            
+
             print(f"Book '{book.title}' successfully borrowed by {user.name} {user.surname}.")
             return True
 
         print(f"Book '{book.title}' is not available for borrowing.")
         return False
-    
+
+        
     def remove_book(user, book_id):
         """Removes a book from the user's borrowed list and marks the book as available."""
         db = get_db()
@@ -95,6 +106,14 @@ class Library:
         print(f"Book '{book.title}' is already available.")
         return False
 
+    def update_book_availability(self, book_id, available):
+        """Update the book's availability in the database."""
+        db = get_db()
+        db.execute(
+            'UPDATE books SET available = ? WHERE id = ?',
+            (available, book_id)
+        )
+        db.commit()
         
     @staticmethod
     def create_user(name, surname):

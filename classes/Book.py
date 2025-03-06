@@ -20,16 +20,6 @@ class Book:
         db.commit()
         self.book_id = cursor.lastrowid  # id from sqlite
     
-    def update_availability(self, available):
-        """Update the book's availability in the database."""
-        db = get_db()
-        db.execute(
-            'UPDATE books SET available = ? WHERE id = ?',
-            (available, self.book_id)
-        )
-        db.commit()
-        self.available = available
-    
     @staticmethod
     def get_by_id(book_id):
         """Retrieve a book by its ID."""

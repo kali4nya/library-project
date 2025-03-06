@@ -50,6 +50,22 @@ def create_user():
     
     return redirect(url_for('home'))
 
+@app.route('/borrow', methods=['POST'])
+def borrow_book():
+    book_id = request.form.get('book_id')
+    user_id = request.form.get('user_id')
+    
+    if not user_id:
+        return "User ID is required!", 400
+
+    if book_id:
+        user = User.get_by_id('user_id')
+        library = Library()
+        library.update_book_availability(book_id, available=False)
+        Library.add_book(user, book_id)
+
+    return redirect(url_for('home'))
+
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=5000)
     app.run(debug=True)
