@@ -1,3 +1,15 @@
-body{
-    background-color: #313131;
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    padding: 0;
+    scroll-behavior: smooth;
+    font-family: "Noto Sans", serif;
+    font-optical-sizing: auto;
+    font-weight: 450;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    background-color: #212121;
+    color: white;
 }

@@ -1,17 +1,21 @@
 import sqlite3
-from flask import current_app, g
+import os
+from flask import g
+from config import Config
 
-# connect to the database
 def get_db():
-    # Use g(flask slang xddd) to store the database connection for the current request
-    if 'db' not in g:
-        g.db = sqlite3.connect(current_app.config['DATABASE'])
-        g.db.row_factory = sqlite3.Row  # Enable row access by column name
-
+    """Establish a database connection."""
+    if not hasattr(g, 'db'):
+        g.db = sqlite3.connect(Config.DATABASE_DIRECTORY)
+        
+        # Open the schema.sql file in text mode ('r') with UTF-8 encoding to read as string
+        with open("database/schema.sql", "r", encoding="utf-8") as f:
+            g.db.executescript(f.read())  # Ensure .read() returns a string
+        
     return g.db
 
-# closing the connection once the request is done
 def close_db(e=None):
-    db = g.pop('db', None)
+    """Close the database connection."""
+    db = getattr(g, 'db', None)
     if db is not None:
         db.close()

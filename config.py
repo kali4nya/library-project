@@ -1,4 +1,6 @@
 import os
 
 class Config:
-    DATABASE = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'book_library.db')
+    DATABASE_DIRECTORY = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'database', 'book_library.db')
+
+    BOOK_BORROW_LIMIT = 3
