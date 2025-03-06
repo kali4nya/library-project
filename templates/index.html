@@ -38,22 +38,22 @@
                 <h2>Book List:</h2>
                 <ul>
                     {% for book in books %}
-                        <li>{{ book[1] }} <b>by</b> {{ book[2] }} ({{ book[3] }}) - 
-                            {% if book[4] %}
+                        <li>{{ book.title }} <b>by</b> {{ book.author }} ({{ book.release_year }}) -  
+                            {% if book.available %}
                                 Available
                             {% else %}
                                 Not Available
                             {% endif %}
                         </li>
                     {% endfor %}
-                </ul>
+                </ul>                
             </div>
         
             <div class="container">
                 <h2>Create a User</h2>
                 <form action="{{ url_for('create_user') }}" method="POST">
-                    Name: <input type="text" name="name" required>
-                    Surname: <input type="text" name="surname" required>
+                    Name: <input type="text" name="name" autocomplete="off" required>
+                    Surname: <input type="text" name="surname" autocomplete="off" required>
                     <button type="submit">Create User</button>
                 </form>
 

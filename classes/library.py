@@ -20,17 +20,12 @@ class Library:
         return users
     
     def list_all_books():
+        """Fetch all books from the database and return them as Book objects."""
         db = get_db()
-
-        # Fetch all books from the database
         books_data = db.execute('SELECT id, title, author, release_year, available FROM books').fetchall()
 
-        # Using list comprehension with tuple indexing
-        books = [
-            [book[0], book[1], book[2], book[3], book[4]]
-            for book in books_data
-        ]
-
+        books = [Book(book_id=row[0], title=row[1], author=row[2], release_year=row[3], available=row[4]) for row in books_data]
+        
         return books
     
     @staticmethod
