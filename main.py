@@ -25,7 +25,8 @@ def teardown_appcontext(exception=None):
 @app.route('/')
 def home():
     books = Library.list_all_books()
-    return render_template('index.html', books=books)
+    users = Library.list_all_users()
+    return render_template('index.html', books=books, users=users)
 
 @app.route('/create_book', methods=['POST'])
 def create_book():

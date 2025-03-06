@@ -35,7 +35,7 @@
                     <button type="submit">Add Book</button>
                 </form>
         
-                <h2>Book List</h2>
+                <h2>Book List:</h2>
                 <ul>
                     {% for book in books %}
                         <li>{{ book[1] }} <b>by</b> {{ book[2] }} ({{ book[3] }}) - 
@@ -56,6 +56,13 @@
                     Surname: <input type="text" name="surname" required>
                     <button type="submit">Create User</button>
                 </form>
+
+                <h2>User List:</h2>
+                <ul>
+                    {% for user in users %}
+                        <li>{{ user.name }} {{ user.surname }} <b>(ID: {{ user.user_id }})</b></li>
+                    {% endfor %}
+                </ul>                
             </div>
         </div>        
 

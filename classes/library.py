@@ -11,11 +11,11 @@ class Library:
     def list_all_users():
         """List all registered users in the system."""
         db = get_db()
-        users_data = db.execute('SELECT * FROM users').fetchall()
+        users_data = db.execute('SELECT id, name, surname FROM users').fetchall()
         
         users = []
         for user in users_data:
-            users.append(User(user_id=user['id'], name=user['name'], surname=user['surname']))
+            users.append(User(user_id=user[0], name=user[1], surname=user[2]))  # Use tuple indexing
         
         return users
     
