@@ -2,10 +2,21 @@ body{
     font-family: Arial, sans-serif;
     background-color: #1d1b17;
     color: rgb(230, 230, 230);
+    height: 100dvh;
+    margin: 0;
 }
 
 h1{
     color: white
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.col {
+    display: grid;
 }
 
 .books, .book_adding, .users, .user_adding, .book_borrowing, .book_returning{
@@ -17,4 +28,5 @@ h1{
     margin: 0.5vw 0.1vw 0.5vw 0.3vw;
     width: fit-content;
     font-weight: 600;
+    width: -webkit-fill-available;
 }

@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>library project</title>
-        <meta name="description" content="library project">
-        <meta name="keywords" content="">
-        <meta name="author" content="github.com/kali4nya">
-        <meta http-equiv="X-Ua-Compatible" content="IE=edge,chrome=1">
-        <!-- Set Favicon -->
-        <link rel="icon" href="static/favicon.png" type="image/x-icon">
-        <!-- css-->
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <!-- fonts -->
-    </head>
-    <body>
+
+<head>
+    <meta charset="utf-8">
+    <title>library project</title>
+    <meta name="description" content="library project">
+    <meta name="keywords" content="">
+    <meta name="author" content="github.com/kali4nya">
+    <meta http-equiv="X-Ua-Compatible" content="IE=edge,chrome=1">
+    <!-- Set Favicon -->
+    <link rel="icon" href="static/favicon.png" type="image/x-icon">
+    <!-- css-->
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
+    <!-- fonts -->
+</head>
+
+<body>
+    <div class="grid">
         <div>
             <div class="books">
                 <h1>Books in the Library</h1>
                 <ul>
                     {% for book in books %}
-                        <li>{{ book }}</li>
+                    <li>{{ book }}</li>
                     {% endfor %}
                 </ul>
             </div>
+            <div class="users">
+                <h1>Registered Users</h1>
+                <ul>
+                    {% for user in users %}
+                    <li>{{ user }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col">
             <div class="book_adding">
                 <h1>Book adding</h1>
                 <form action="{{ url_for('add_book') }}" method="POST">
@@ -33,16 +47,6 @@
                     <button>Add Book</button>
                 </form>
             </div>
-        </div>
-        <div>
-            <div class="users">
-                <h1>Registered Users</h1>
-                <ul>
-                    {% for user in users %}
-                        <li>{{ user }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
             <div class="user_adding">
                 <h1>User adding</h1>
                 <form action="{{ url_for('add_user') }}" method="POST">
@@ -51,28 +55,29 @@
                     <button>Add User</button>
                 </form>
             </div>
-        </div>
-        <div>
             <div class="book_borrowing">
                 <h1>Book borrowing</h1>
                 <form action="{{ url_for('borrow_book') }}" method="POST">
                     <input type="text" name="title" placeholder="book title" autocomplete="off" required>
-                    <input type="text" name="user_full" placeholder="({user.name} {user.surname})" autocomplete="off" required>
+                    <input type="text" name="user_full" placeholder="({user.name} {user.surname})" autocomplete="off"
+                        required>
                     <button>Borrow book</button>
                 </form>
             </div>
-        </div>
-        <div>
             <div class="book_returning">
                 <h1>Book returning</h1>
                 <form action="{{ url_for('return_book') }}" method="POST">
                     <input type="text" name="title" placeholder="book title" autocomplete="off" required>
-                    <input type="text" name="user_full" placeholder="({user.name} {user.surname})" autocomplete="off" required>
+                    <input type="text" name="user_full" placeholder="({user.name} {user.surname})" autocomplete="off"
+                        required>
                     <button>Return book</button>
                 </form>
             </div>
         </div>
+    </div>
+    </div>
 
-        <script src="{{ url_for('static', filename='script.js') }}"></script>
-    </body>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
 </html>
