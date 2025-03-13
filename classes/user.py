@@ -1,18 +1,14 @@
-from classes.book import Book
 class User:
-    def __init__(self, name, surname, borrowed_books = []):
+    def __init__(self, name, surname):
         self.name = name
         self.surname = surname
-        self.borrowed_books = borrowed_books
+        self.borrowed_books = []
         
     def __str__(self):
-        return f"{self.name} {self.surname}, {self.borrowed_books if self.borrowed_books else 'no borrowed books'}"
+        return f"{self.name} {self.surname}{(' | Borrowed books: ' +', '.join(self.borrowed_books)) if self.borrowed_books else ''}"
         
     def add_book(self, book):
-        self.borrowed_books.append(book)
-        
+        self.borrowed_books.append(book.title)
+
     def remove_book(self, book):
-        self.borrowed_books.remove(book)
-        
-    def show_books(self):
-        return self.borrowed_books
+        self.borrowed_books.remove(book.title)

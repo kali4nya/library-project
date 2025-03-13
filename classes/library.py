@@ -26,18 +26,25 @@ class Library:
             return "Invalid input (must be a User object or a list of User objects)"
         
     def borrow_book(self, user, book):
-        if book.available and len(user.borrowed_books) <= Config.BORROW_LIMIT:
-            Book.borrow_book(book)
-            user.add_book(book)
-        else:
-            return "Book is not available"
+        try:
+            if book.available and len(user.borrowed_books) <= Config.BORROW_LIMIT:
+                book.borrow_book()
+                user.add_book(book)
+            else:
+                return "Book is not available"
+        except Exception as e:
+            print(f"An error occurred: {e}")
         
     def return_book(self, user, book):
-        if book in user.borrowed_books:
-            Book.return_book(book)
-            user.remove_book(book)
-        else:
-            return "User has not borrowed this book"
+        try:
+            if book.title in user.borrowed_books:
+                book.return_book()
+                user.remove_book(book)
+            else:
+                print("User has not borrowed this book")
+                return "User has not borrowed this book"
+        except Exception as e:
+            print(f"An error occurred: {e}")
         
     def show_books(self):
         return self.books
@@ -49,4 +56,10 @@ class Library:
         for book in self.books:
             if book.title.lower() == title.lower():
                 return book
+        return "Book not found"
+    
+    def find_user(self, user_name, user_surname):
+        for user in self.users:
+            if user.name.lower() == user_name.lower() and user.surname.lower() == user_surname.lower():
+                return user
         return "Book not found"

@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from classes.library import Library
 from classes.book import Book
 from classes.user import User
+from config import Config
 
 #flask declaration
 app = Flask(__name__)
+app.secret_key = Config.FLASK_SECRET_KEY
 
 #lib initialization
 lib = Library()
@@ -13,13 +15,14 @@ lib = Library()
 book1 = Book("Harry Potter", "J.K. Rowling", 1997)
 book2 = Book("The Hobbit", "J.R.R. Tolkien", 1937)
 book3 = Book("The Catcher in the Rye", "J.D. Salinger", 1951)
+book4 = Book("Middlesex", "Jeffrey Eugenides", 2002)
 
 user1 = User("John", "Doe")
 user2 = User("Jane", "Doe")
+user3 = User("Johnathan", "Ddooee")
 
-Library.add_book(lib, [book1, book2, book3])
-Library.add_user(lib, [user1, user2])
-
+Library.add_book(lib, [book1, book2, book3, book4])
+Library.add_user(lib, [user1, user2, user3])
 #testing data /end
 
 @app.route('/')
@@ -43,6 +46,26 @@ def add_user():
     surname = request.form['surname']
     user = User(name, surname)
     Library.add_user(lib, user)
+    return redirect(url_for('index'))
+
+@app.route('/borrow_book', methods=['POST'])
+def borrow_book():
+    book_title = request.form['title']
+    
+    user = lib.find_user(request.form['user_full'].split(' ')[0], request.form['user_full'].split(' ')[1])
+    book = lib.find_book(book_title)
+    
+    lib.borrow_book(user, book)
+    return redirect(url_for('index'))
+
+@app.route('/return_book', methods=['POST'])
+def return_book():
+    book_title = request.form['title']
+    
+    user = lib.find_user(request.form['user_full'].split(' ')[0], request.form['user_full'].split(' ')[1])
+    book = lib.find_book(book_title)
+    
+    lib.return_book(user, book)
     return redirect(url_for('index'))
 
 #run

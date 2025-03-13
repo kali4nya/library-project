@@ -9,7 +9,7 @@ class Book:
         return f"{self.title} by {self.author} ({self.year}), {'available' if self.available else 'not available'}"    
     
     def borrow_book(self):
-        self.available == False
+        self.available = False
     
     def return_book(self):
-        self.available == True
+        self.available = True

@@ -55,6 +55,21 @@
         <div>
             <div class="book_borrowing">
                 <h1>Book borrowing</h1>
+                <form action="{{ url_for('borrow_book') }}" method="POST">
+                    <input type="text" name="title" placeholder="book title" autocomplete="off" required>
+                    <input type="text" name="user_full" placeholder="({user.name} {user.surname})" autocomplete="off" required>
+                    <button>Borrow book</button>
+                </form>
+            </div>
+        </div>
+        <div>
+            <div class="book_returning">
+                <h1>Book returning</h1>
+                <form action="{{ url_for('return_book') }}" method="POST">
+                    <input type="text" name="title" placeholder="book title" autocomplete="off" required>
+                    <input type="text" name="user_full" placeholder="({user.name} {user.surname})" autocomplete="off" required>
+                    <button>Return book</button>
+                </form>
             </div>
         </div>
 

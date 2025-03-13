@@ -8,7 +8,7 @@ h1{
     color: white
 }
 
-.books, .book_adding, .users, .user_adding, .book_borrowing{
+.books, .book_adding, .users, .user_adding, .book_borrowing, .book_returning{
     display: inline-block;
     justify-content: center;
     border: rgb(212, 212, 212) 4px solid;
