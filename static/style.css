@@ -24,9 +24,53 @@ h1{
     justify-content: center;
     border: rgb(212, 212, 212) 4px solid;
     border-radius: 10px;
+    box-shadow: 0 0 8px rgba(251, 134, 0, 0.767), 0 0 5px rgba(218, 0, 0, 0.4);
     padding: 1vw;
     margin: 0.5vw 0.1vw 0.5vw 0.3vw;
     width: fit-content;
     font-weight: 600;
     width: -webkit-fill-available;
+}
+
+input {
+    border: 2px solid transparent;
+    padding: 3px;
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+input:focus {
+    outline: none;
+    size-adjust: none;
+    border: 2px solid transparent;
+    box-shadow: 0 0 8px rgba(251, 0, 155, 0.6), 0 0 7px rgba(176, 0, 0, 0.4);
+    background: linear-gradient(white, white) padding-box, 
+                linear-gradient(to right, #fb4f00, #b00000) border-box;
+}
+
+button{
+    background-color: #65d2f3;
+    border: 1px solid transparent;
+    border-radius: .70rem;
+    box-sizing: border-box;
+    color: #1d1b17;
+    cursor: pointer;
+    font-size: 1vw;
+    font-weight: 600;
+    padding: .3rem 1rem;
+    user-select: none;
+    transition: transform 0.01s ease-in-out, background-color 0.2s ease-in-out;
+    margin-left: 0.3vw;
+}
+button:hover{
+    background-color: #6699f8;
+    transform: scale(1.04);
+}
+button:active {
+    transform: scale(0.98);
+    background-color: #a06df1;
+    transition: none;
+}
+
+li{
+    color: #e28801;
 }

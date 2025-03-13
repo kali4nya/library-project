@@ -16,12 +16,13 @@ book1 = Book("Harry Potter", "J.K. Rowling", 1997)
 book2 = Book("The Hobbit", "J.R.R. Tolkien", 1937)
 book3 = Book("The Catcher in the Rye", "J.D. Salinger", 1951)
 book4 = Book("Middlesex", "Jeffrey Eugenides", 2002)
+book5 = Book("The Dispossessed", "Ursula K. Le Guin", 1974)
 
 user1 = User("John", "Doe")
 user2 = User("Jane", "Doe")
 user3 = User("Johnathan", "Ddooee")
 
-Library.add_book(lib, [book1, book2, book3, book4])
+Library.add_book(lib, [book1, book2, book3, book4, book5])
 Library.add_user(lib, [user1, user2, user3])
 #testing data /end
 
@@ -51,8 +52,9 @@ def add_user():
 @app.route('/borrow_book', methods=['POST'])
 def borrow_book():
     book_title = request.form['title']
+    user_raw = request.form['user_full']
     
-    user = lib.find_user(request.form['user_full'].split(' ')[0], request.form['user_full'].split(' ')[1])
+    user = lib.find_user(user_raw.split(' ')[0], user_raw.split(' ')[1])
     book = lib.find_book(book_title)
     
     lib.borrow_book(user, book)
@@ -61,8 +63,9 @@ def borrow_book():
 @app.route('/return_book', methods=['POST'])
 def return_book():
     book_title = request.form['title']
+    user_raw = request.form['user_full']
     
-    user = lib.find_user(request.form['user_full'].split(' ')[0], request.form['user_full'].split(' ')[1])
+    user = lib.find_user(user_raw.split(' ')[0], user_raw.split(' ')[1])
     book = lib.find_book(book_title)
     
     lib.return_book(user, book)
