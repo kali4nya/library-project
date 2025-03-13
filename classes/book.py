@@ -5,8 +5,11 @@ class Book:
         self.year = year
         self.available = available
         
-    def borrow_book(title):
-        pass
+    def __str__(self):
+        return f"{self.title} by {self.author} ({self.year}), {'available' if self.available else 'not available'}"    
     
-    def return_book(title):
-        pass
+    def borrow_book(self):
+        self.available == False
+    
+    def return_book(self):
+        self.available == True

@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>cool image library, i guess...</title>
+        <title>library project</title>
         <meta name="description" content="library project">
         <meta name="keywords" content="">
         <meta name="author" content="github.com/kali4nya">
@@ -15,7 +15,49 @@
         <!-- fonts -->
     </head>
     <body>
+        <div>
+            <div class="books">
+                <h1>Books in the Library</h1>
+                <ul>
+                    {% for book in books %}
+                        <li>{{ book }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="book_adding">
+                <h1>Book adding</h1>
+                <form action="{{ url_for('add_book') }}" method="POST">
+                    <input type="text" name="title" placeholder="title" autocomplete="off" required>
+                    <input type="text" name="author" placeholder="author" autocomplete="off" required>
+                    <input type="text" name="year" placeholder="year" autocomplete="off" required>
+                    <button>Add Book</button>
+                </form>
+            </div>
+        </div>
+        <div>
+            <div class="users">
+                <h1>Registered Users</h1>
+                <ul>
+                    {% for user in users %}
+                        <li>{{ user }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="user_adding">
+                <h1>User adding</h1>
+                <form action="{{ url_for('add_user') }}" method="POST">
+                    <input type="text" name="name" placeholder="name" autocomplete="off" required>
+                    <input type="text" name="surname" placeholder="surname" autocomplete="off" required>
+                    <button>Add User</button>
+                </form>
+            </div>
+        </div>
+        <div>
+            <div class="book_borrowing">
+                <h1>Book borrowing</h1>
+            </div>
+        </div>
 
-        <script src="static/script.js"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>

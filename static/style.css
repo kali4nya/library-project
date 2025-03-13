@@ -1,0 +1,20 @@
+body{
+    font-family: Arial, sans-serif;
+    background-color: #1d1b17;
+    color: rgb(230, 230, 230);
+}
+
+h1{
+    color: white
+}
+
+.books, .book_adding, .users, .user_adding, .book_borrowing{
+    display: inline-block;
+    justify-content: center;
+    border: rgb(212, 212, 212) 4px solid;
+    border-radius: 10px;
+    padding: 1vw;
+    margin: 0.5vw 0.1vw 0.5vw 0.3vw;
+    width: fit-content;
+    font-weight: 600;
+}
