@@ -13,7 +13,7 @@
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
     <!-- css-->
     <link rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}">
+        href="{{ url_for('static', filename='adminPanel/style.css') }}">
     <!-- fonts -->
 </head>
 
@@ -74,10 +74,11 @@
                 </form>
             </div>
         </div>
+        <a href="{{ url_for('logout') }}">Logout</a>
     </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='adminPanel/script.js') }}"></script>
 </body>
 
 </html>

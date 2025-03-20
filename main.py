@@ -3,10 +3,19 @@ from classes.library import Library
 from classes.book import Book
 from classes.user import User
 from config import Config
+import json
 
 #flask declaration
 app = Flask(__name__)
 app.secret_key = Config.FLASK_SECRET_KEY
+
+USER_CREDENTIALS_DIR = Config.USER_CREDENTIALS_DIR
+
+def load_credentials():
+    with open(USER_CREDENTIALS_DIR) as f:
+        return json.load(f)
+
+USER_CREDENTIALS = load_credentials()
 
 #lib initialization
 lib = Library()
@@ -26,11 +35,42 @@ Library.add_book(lib, [book1, book2, book3, book4, book5])
 Library.add_user(lib, [user1, user2, user3])
 #testing data /end
 
-@app.route('/')
-def index():
-    books = lib.show_books()
-    users = lib.show_users()
-    return render_template("index.html", books=books, users=users)
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        if username in USER_CREDENTIALS and USER_CREDENTIALS[username]["password"] == password:
+            if USER_CREDENTIALS[username]["permission_level"] == 1:
+                session['user'] = username  # Store session data
+                return redirect(url_for('main'))
+            if USER_CREDENTIALS[username]["permission_level"] == 3:
+                session['user'] = username  # Store session data
+                return redirect(url_for('adminPanel'))
+        else:
+            return render_template('home.html', error="Invalid username or password!")
+
+    return render_template('home.html')
+
+@app.route('/main')
+def main():
+    if 'user' in session:
+        username = session['user']
+        if username in USER_CREDENTIALS and USER_CREDENTIALS[username]['permission_level'] == 1:
+            return render_template("main.html")
+    return redirect(url_for('home'))
+
+@app.route('/adminPanel')
+def adminPanel():
+    print(session.get('permission_level'))
+    if 'user' in session:
+        username = session['user']
+        if username in USER_CREDENTIALS and USER_CREDENTIALS[username]['permission_level'] == 3:
+            books = lib.show_books()
+            users = lib.show_users()
+            return render_template("adminPanel.html", books=books, users=users)
+    return redirect(url_for('home'))
 
 @app.route('/add_book', methods=['POST'])
 def add_book():
@@ -70,6 +110,11 @@ def return_book():
     
     lib.return_book(user, book)
     return redirect(url_for('index'))
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)  # Remove user from session
+    return redirect(url_for('home'))
 
 #run
 if __name__ == '__main__':

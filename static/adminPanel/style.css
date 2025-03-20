@@ -30,12 +30,14 @@ h1{
     width: fit-content;
     font-weight: 600;
     width: -webkit-fill-available;
+    max-width: max-content;
 }
 
 input {
     border: 2px solid transparent;
     padding: 3px;
     transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    max-width: 12vw;
 }
 
 input:focus {
