@@ -9,13 +9,13 @@ import json
 app = Flask(__name__)
 app.secret_key = Config.FLASK_SECRET_KEY
 
-USER_CREDENTIALS_DIR = Config.USER_CREDENTIALS_DIR
+USERS_DIR = Config.USERS_DIR
 
-def load_credentials():
-    with open(USER_CREDENTIALS_DIR) as f:
+def load_users():
+    with open(USERS_DIR) as f:
         return json.load(f)
 
-USER_CREDENTIALS = load_credentials()
+USERS = load_users()
 
 #lib initialization
 lib = Library()
@@ -41,11 +41,11 @@ def home():
         username = request.form['username']
         password = request.form['password']
         
-        if username in USER_CREDENTIALS and USER_CREDENTIALS[username]["password"] == password:
-            if USER_CREDENTIALS[username]["permission_level"] == 1:
+        if username in USERS and USERS[username]["password"] == password:
+            if USERS[username]["permission_level"] == 1:
                 session['user'] = username  # Store session data
                 return redirect(url_for('main'))
-            if USER_CREDENTIALS[username]["permission_level"] == 3:
+            if USERS[username]["permission_level"] == 3:
                 session['user'] = username  # Store session data
                 return redirect(url_for('adminPanel'))
         else:
@@ -57,7 +57,7 @@ def home():
 def main():
     if 'user' in session:
         username = session['user']
-        if username in USER_CREDENTIALS and USER_CREDENTIALS[username]['permission_level'] == 1:
+        if username in USERS and USERS[username]['permission_level'] == 1:
             return render_template("main.html")
     return redirect(url_for('home'))
 
@@ -66,7 +66,7 @@ def adminPanel():
     print(session.get('permission_level'))
     if 'user' in session:
         username = session['user']
-        if username in USER_CREDENTIALS and USER_CREDENTIALS[username]['permission_level'] == 3:
+        if username in USERS and USERS[username]['permission_level'] == 3:
             books = lib.show_books()
             users = lib.show_users()
             return render_template("adminPanel.html", books=books, users=users)
