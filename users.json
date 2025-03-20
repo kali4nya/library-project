@@ -1,0 +1,26 @@
+{
+    "root": {
+        "name": "The",
+        "surname": "Root",
+        "password": "4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2",
+        "permission_level": 3
+    },
+    "admin": {
+        "name": "The",
+        "surname": "Admin",
+        "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+        "permission_level": 3
+    },
+    "john": {
+        "name": "John",
+        "surname": "Doe",
+        "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+        "permission_level": 1
+    },
+    "jane": {
+        "name": "Jane",
+        "surname": "Doe",
+        "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+        "permission_level": 1
+    }
+}

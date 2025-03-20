@@ -27,12 +27,12 @@ book3 = Book("The Catcher in the Rye", "J.D. Salinger", 1951)
 book4 = Book("Middlesex", "Jeffrey Eugenides", 2002)
 book5 = Book("The Dispossessed", "Ursula K. Le Guin", 1974)
 
-user1 = User("John", "Doe")
-user2 = User("Jane", "Doe")
-user3 = User("Johnathan", "Ddooee")
+# user1 = User("John", "Doe")
+# user2 = User("Jane", "Doe")
+# user3 = User("Johnathan", "Ddooee")
 
 Library.add_book(lib, [book1, book2, book3, book4, book5])
-Library.add_user(lib, [user1, user2, user3])
+# Library.add_user(lib, [user1, user2, user3])
 #testing data /end
 
 @app.route('/', methods=['GET', 'POST'])
