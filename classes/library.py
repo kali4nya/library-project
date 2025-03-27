@@ -124,3 +124,60 @@ class Library:
             print(f"User data saved to {filename}")
         except Exception as e:
             print(f"Error saving user data: {e}")
+            
+    def serialize_books(self, book=None, all=True):
+        if all:
+            return {
+                b.title: {
+                    "author": b.author,
+                    "year": b.year,
+                    "available": b.available
+                }
+                for b in self.books
+            }
+
+        if book is None:
+            raise ValueError("A book must be provided when all=False")
+
+        for b in self.books:
+            if b.title == book.title:
+                return {
+                    b.title: {
+                        "author": b.author,
+                        "year": b.year,
+                        "available": b.available
+                    }
+                }
+
+        return {}
+
+    def save_books_to_json(self, filename=Config.BOOKS_DIR, all=True, book=None):
+        """Saves books to a JSON file without deleting existing books."""
+
+        # Load existing data if the file exists
+        if os.path.exists(filename):
+            try:
+                with open(filename, "r", encoding="utf-8") as file:
+                    existing_data = json.load(file)
+            except json.JSONDecodeError:
+                existing_data = {}  # If file is corrupted, start fresh
+        else:
+            existing_data = {}  # If file doesn't exist, start fresh
+
+        # Get new book data
+        new_data = self.serialize_books(book=book, all=all)
+
+        if all:
+            # If saving all books, overwrite everything
+            existing_data = new_data  
+        else:
+            # If saving a single book, update only that book's data
+            existing_data.update(new_data)  
+
+        # Save updated data back to the file
+        try:
+            with open(filename, "w", encoding="utf-8") as file:
+                json.dump(existing_data, file, indent=4)
+            print(f"Book data saved to {filename}")
+        except Exception as e:
+            print(f"Error saving book data: {e}")

@@ -4,36 +4,52 @@ from classes.book import Book
 from classes.user import User
 from config import Config
 import json
+import os
 
 #flask declaration
 app = Flask(__name__)
 app.secret_key = Config.FLASK_SECRET_KEY
 
 USERS_DIR = Config.USERS_DIR
+BOOKS_DIR = Config.BOOKS_DIR
 
-def load_users():
+def load_users_list():
+    with open(USERS_DIR, "r", encoding="utf-8") as f:
+        users_data = json.load(f)  # Load JSON as a dictionary
+
+    users = [
+        User(username, data["name"], data["surname"], data["password"], data["permission_level"])
+        for username, data in users_data.items()
+    ]
+
+    return users
+
+def load_users_dictionary():
     with open(USERS_DIR) as f:
         return json.load(f)
 
-USERS = load_users()
+USERSdictionary = load_users_dictionary()
+USERSlist = load_users_list()
+
+def load_books_list():
+    """Loads books from JSON and converts them into Book objects."""
+    if not os.path.exists(BOOKS_DIR):
+        return []  # If no file exists, return an empty list
+
+    with open(BOOKS_DIR, "r", encoding="utf-8") as f:
+        books_data = json.load(f)
+
+    return [Book(title, data["author"], data["year"], data["available"]) for title, data in books_data.items()]
+
+# Load books into a list
+BOOKSlist = load_books_list()
 
 #lib initialization
 lib = Library()
 
-# testing data
-book1 = Book("Harry Potter", "J.K. Rowling", 1997)
-book2 = Book("The Hobbit", "J.R.R. Tolkien", 1937)
-book3 = Book("The Catcher in the Rye", "J.D. Salinger", 1951)
-book4 = Book("Middlesex", "Jeffrey Eugenides", 2002)
-book5 = Book("The Dispossessed", "Ursula K. Le Guin", 1974)
-
-# user1 = User("John", "Doe")
-# user2 = User("Jane", "Doe")
-# user3 = User("Johnathan", "Ddooee")
-
-Library.add_book(lib, [book1, book2, book3, book4, book5])
-# Library.add_user(lib, [user1, user2, user3])
-#testing data /end
+lib.add_book(BOOKSlist)
+lib.add_user(USERSlist)
+#end
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -41,11 +57,11 @@ def home():
         username = request.form['username']
         password = request.form['password']
         
-        if username in USERS and USERS[username]["password"] == password:
-            if USERS[username]["permission_level"] < 3:
+        if username in USERSdictionary and USERSdictionary[username]["password"] == password:
+            if USERSdictionary[username]["permission_level"] < 3:
                 session['user'] = username  # Store session data
                 return redirect(url_for('main'))
-            if USERS[username]["permission_level"] == 3:
+            if USERSdictionary[username]["permission_level"] == 3:
                 session['user'] = username  # Store session data
                 return redirect(url_for('adminPanel'))
         else:
@@ -57,7 +73,7 @@ def home():
 def main():
     if 'user' in session:
         username = session['user']
-        if username in USERS and USERS[username]['permission_level'] < 3:
+        if username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
             return render_template("main.html")
     return redirect(url_for('home'))
 
@@ -66,7 +82,7 @@ def adminPanel():
     print(session.get('permission_level'))
     if 'user' in session:
         username = session['user']
-        if username in USERS and USERS[username]['permission_level'] == 3:
+        if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
             books = lib.show_books()
             users = lib.show_users()
             return render_template("adminPanel.html", books=books, users=users)
@@ -78,7 +94,8 @@ def add_book():
     author = request.form['author']
     year = request.form['year']
     book = Book(title, author, year)
-    Library.add_book(lib, book)
+    lib.add_book(book)
+    lib.save_books_to_json(all=False, book=book)
     return redirect(url_for('adminPanel'))
 
 @app.route('/add_user', methods=['POST'])
@@ -94,6 +111,7 @@ def add_user():
     user = User(username=username, name=name, surname=surname, password=password, permission_level=permission_level)
     lib.add_user(user)
     lib.save_users_to_json(all=False, user=user)
+    globals()["USERSdictionary"] = load_users_dictionary()
     return redirect(url_for('adminPanel'))
 
 @app.route('/borrow_book', methods=['POST'])

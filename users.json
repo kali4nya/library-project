@@ -23,15 +23,9 @@
         "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
         "permission_level": 1
     },
-    "cooluser": {
-        "name": "user",
-        "surname": "cool",
-        "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
-        "permission_level": 1
-    },
-    "user1": {
-        "name": "1",
-        "surname": "1",
+    "tester": {
+        "name": "tester",
+        "surname": "tester",
         "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
         "permission_level": 1
     }

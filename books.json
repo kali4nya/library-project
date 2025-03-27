@@ -1,0 +1,32 @@
+{
+    "Harry Potter": {
+        "author": "J.K. Rowling",
+        "year": 1997,
+        "available": true
+    },
+    "The Hobbit": {
+        "author": "J.R.R. Tolkien",
+        "year": 1937,
+        "available": true
+    },
+    "The Catcher in the Rye": {
+        "author": "J.D. Salinger",
+        "year": 1951,
+        "available": true
+    },
+    "Middlesex": {
+        "author": "Jeffrey Eugenides",
+        "year": 2002,
+        "available": true
+    },
+    "The Dispossessed": {
+        "author": "Ursula K. Le Guin",
+        "year": 1974,
+        "available": true
+    },
+    "The Three-Body Problem": {
+        "author": "Liu Cixin",
+        "year": "2008",
+        "available": true
+    }
+}
