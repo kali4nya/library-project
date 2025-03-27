@@ -42,7 +42,7 @@ def home():
         password = request.form['password']
         
         if username in USERS and USERS[username]["password"] == password:
-            if USERS[username]["permission_level"] == 1:
+            if USERS[username]["permission_level"] < 3:
                 session['user'] = username  # Store session data
                 return redirect(url_for('main'))
             if USERS[username]["permission_level"] == 3:
@@ -57,7 +57,7 @@ def home():
 def main():
     if 'user' in session:
         username = session['user']
-        if username in USERS and USERS[username]['permission_level'] == 1:
+        if username in USERS and USERS[username]['permission_level'] < 3:
             return render_template("main.html")
     return redirect(url_for('home'))
 
@@ -79,15 +79,22 @@ def add_book():
     year = request.form['year']
     book = Book(title, author, year)
     Library.add_book(lib, book)
-    return redirect(url_for('index'))
+    return redirect(url_for('adminPanel'))
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
+    username = request.form['username']
     name = request.form['name']
     surname = request.form['surname']
-    user = User(name, surname)
-    Library.add_user(lib, user)
-    return redirect(url_for('index'))
+    password = request.form['password'] ###
+    try:
+        permission_level = int(request.form['permission_level'])
+    except:
+        permission_level = 1
+    user = User(username=username, name=name, surname=surname, password=password, permission_level=permission_level)
+    lib.add_user(user)
+    lib.save_users_to_json(all=False, user=user)
+    return redirect(url_for('adminPanel'))
 
 @app.route('/borrow_book', methods=['POST'])
 def borrow_book():
@@ -98,7 +105,7 @@ def borrow_book():
     book = lib.find_book(book_title)
     
     lib.borrow_book(user, book)
-    return redirect(url_for('index'))
+    return redirect(url_for('adminPanel'))
 
 @app.route('/return_book', methods=['POST'])
 def return_book():
@@ -109,7 +116,7 @@ def return_book():
     book = lib.find_book(book_title)
     
     lib.return_book(user, book)
-    return redirect(url_for('index'))
+    return redirect(url_for('adminPanel'))
 
 @app.route('/logout')
 def logout():

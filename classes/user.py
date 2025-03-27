@@ -1,7 +1,11 @@
 class User:
-    def __init__(self, name, surname):
+    def __init__(self, username, name, surname, password, permission_level = 1):
+        self.username = username
         self.name = name
         self.surname = surname
+        self.password = password
+        self.permission_level = permission_level
+        #
         self.borrowed_books = []
         
     def __str__(self):

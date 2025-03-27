@@ -1,6 +1,8 @@
 from config import Config
 from classes.book import Book
 from classes.user import User
+import json
+import os
 
 class Library:
     def __init__(self, books = [], users = []):
@@ -63,3 +65,62 @@ class Library:
             if user.name.lower() == user_name.lower() and user.surname.lower() == user_surname.lower():
                 return user
         return "Book not found"
+    
+    def serialize_users(self, user=None, all=True):
+        if all:
+            return {
+                u.username: {
+                    "name": u.name,
+                    "surname": u.surname,
+                    "password": u.password,
+                    "permission_level": u.permission_level
+                }
+                for u in self.users
+            }
+
+        if user is None:
+            raise ValueError("A user must be provided when all=False")
+
+        for u in self.users:
+            if u.username == user.username:
+                return {
+                    u.username: {
+                        "name": u.name,
+                        "surname": u.surname,
+                        "password": u.password,
+                        "permission_level": u.permission_level
+                    }
+                }
+
+        return {}
+    
+    def save_users_to_json(self, filename=Config.USERS_DIR, all=True, user=None):
+        """Saves users to a JSON file without deleting existing users."""
+
+        # Load existing data if the file exists
+        if os.path.exists(filename):
+            try:
+                with open(filename, "r", encoding="utf-8") as file:
+                    existing_data = json.load(file)
+            except json.JSONDecodeError:
+                existing_data = {}  # If file is corrupted, start fresh
+        else:
+            existing_data = {}  # If file doesn't exist, start fresh
+
+        # Get new user data
+        new_data = self.serialize_users(user=user, all=all)
+
+        if all:
+            # If saving all users, overwrite everything
+            existing_data = new_data  
+        else:
+            # If saving a single user, update only that user's data
+            existing_data.update(new_data)  
+
+        # Save updated data back to the file
+        try:
+            with open(filename, "w", encoding="utf-8") as file:
+                json.dump(existing_data, file, indent=4)
+            print(f"User data saved to {filename}")
+        except Exception as e:
+            print(f"Error saving user data: {e}")

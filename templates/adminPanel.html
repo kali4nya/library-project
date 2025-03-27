@@ -49,10 +49,14 @@
             </div>
             <div class="user_adding">
                 <h1>User adding</h1>
-                <form action="{{ url_for('add_user') }}" method="POST">
+                <form id="userForm" action="{{ url_for('add_user') }}" method="POST">
+                    <input type="text" name="username" placeholder="username" autocomplete="off" required>
                     <input type="text" name="name" placeholder="name" autocomplete="off" required>
                     <input type="text" name="surname" placeholder="surname" autocomplete="off" required>
-                    <button>Add User</button>
+                    <input type="password" id="password" placeholder="password" autocomplete="off" required>
+                    <input type="hidden" name="password" id="hashedPassword">
+                    <input type="text" name="permission_level" placeholder="1, 2, 3" autocomplete="off" required>
+                    <button type="submit">Add User</button>
                 </form>
             </div>
             <div class="book_borrowing">
