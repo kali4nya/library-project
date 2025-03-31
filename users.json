@@ -28,5 +28,17 @@
         "surname": "tester",
         "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
         "permission_level": 1
+    },
+    "user": {
+        "name": "coolName",
+        "surname": "coolSurname",
+        "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+        "permission_level": 1
+    },
+    "qq": {
+        "name": "qq",
+        "surname": "qq",
+        "password": "d5ce2b19fbda14a25deac948154722f33efd37b369a32be8f03ec2be8ef7d3a5",
+        "permission_level": 1
     }
 }

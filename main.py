@@ -54,18 +54,34 @@ lib.add_user(USERSlist)
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        if username in USERSdictionary and USERSdictionary[username]["password"] == password:
-            if USERSdictionary[username]["permission_level"] < 3:
+        action = request.form.get('action')
+
+        if action == "login":
+            username = request.form['username']
+            password = request.form['password']
+            if username in USERSdictionary and USERSdictionary[username]["password"] == password:
                 session['user'] = username  # Store session data
-                return redirect(url_for('main'))
-            if USERSdictionary[username]["permission_level"] == 3:
-                session['user'] = username  # Store session data
-                return redirect(url_for('adminPanel'))
-        else:
-            return render_template('home.html', error="Invalid username or password!")
+                
+                if USERSdictionary[username]["permission_level"] < 3:
+                    return redirect(url_for('main'))
+                elif USERSdictionary[username]["permission_level"] == 3:
+                    return redirect(url_for('adminPanel'))
+            else:
+                return render_template('home.html', error="Invalid username or password!")
+
+        elif action == "register":
+            username = request.form['registerUsername']
+            password = request.form['registerPassword'] ###
+            name = request.form['registerName']
+            surname = request.form['registerSurname']
+            if username in USERSdictionary:
+                return render_template('home.html', error="Username already exists!")
+            # Register the user
+            user = User(username=username, name=name, surname=surname, password=password, permission_level=1)
+            lib.add_user(user)
+            lib.save_users_to_json(all=False, user=user)
+            globals()["USERSdictionary"] = load_users_dictionary()
+            return render_template('home.html', error="Registration successful! You can now log in.")
 
     return render_template('home.html')
 

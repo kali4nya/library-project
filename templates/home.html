@@ -22,10 +22,12 @@
     </div>
     
     <!-- NEW CONTAINER TO CENTER THE FORMS -->
+    <div id="error-banner" class="error-banner" data-error="{{ error }}"></div>
     <div class="container">
         <div class="loginForm">
             <h2>Log in here:</h2>
             <form method="POST">
+                <input type="hidden" name="action" value="login">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" required>
                 <br>
@@ -33,7 +35,6 @@
                 <input type="password" id="password" name="password" placeholder="Password" autocomplete="off" required>
                 <br>
                 <button type="submit">Login</button>
-                <div id="error-banner" class="error-banner" data-error="{{ error }}"></div>
                 <button type="button" onclick="window.location.href='{{ url_for('home') }}'">Back</button>
             </form>
         </div>
@@ -41,14 +42,20 @@
         <div class="registerForm">
             <h2>Register here:</h2>
             <form method="POST">
+                <input type="hidden" name="action" value="register">
                 <label for="registerUsername">Username:</label>
-                <input type="text" id="registerUsername" name="username" placeholder="Username" autocomplete="off" required>
+                <input type="text" id="registerUsername" name="registerUsername" placeholder="Username" autocomplete="off" required>
+                <br>
+                <label for="registerName">Name:</label>
+                <input type="text" id="registerName" name="registerName" placeholder="Name" autocomplete="off" required>
+                <br>
+                <label for="registerSurname">Surname:</label>
+                <input type="text" id="registerSurname" name="registerSurname" placeholder="Surname" autocomplete="off" required>
                 <br>
                 <label for="registerPassword">Password:</label>
-                <input type="password" id="registerPassword" name="password" placeholder="Password" autocomplete="off" required>
+                <input type="password" id="registerPassword" name="registerPassword" placeholder="Password" autocomplete="off" required>
                 <br>
                 <button type="submit">Register</button>
-                <div id="error-banner" class="error-banner" data-error="{{ error }}"></div>
                 <button type="button" onclick="window.location.href='{{ url_for('home') }}'">Back</button>
             </form>
         </div>

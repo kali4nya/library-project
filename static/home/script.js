@@ -14,22 +14,45 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Handle form submission
-    const form = document.querySelector('form');
-    form.onsubmit = async function (event) {
-        event.preventDefault(); // Prevent normal form submission
-
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-
-        // Hash the password using SHA-256
-        const hashedPassword = await sha256(password);
-
-        // Replace the password field with the hashed password
-        document.getElementById("password").value = hashedPassword;
-
-        // Now submit the form with hashed password
-        form.submit();
-    };
+    async function hashPasswordAndSubmit(event, formType) {
+        event.preventDefault(); // Prevent default form submission
+    
+        if (formType === "login") {
+            const passwordField = document.getElementById("password");
+            const password = passwordField.value;
+    
+            if (!password) {
+                console.error("Password field is empty!");
+                return;
+            }
+    
+            const hashedPassword = await sha256(password);
+            console.log("Login Hashed Password:", hashedPassword);
+            
+            passwordField.value = hashedPassword;
+        } 
+        else if (formType === "register") {
+            const passwordField = document.getElementById("registerPassword");
+            const password = passwordField.value;
+    
+            if (!password) {
+                console.error("Register password field is empty!");
+                return;
+            }
+    
+            const hashedPassword = await sha256(password);
+            console.log("Register Hashed Password:", hashedPassword);
+            
+            passwordField.value = hashedPassword;
+        }
+    
+        event.target.submit(); // Now submit the form
+    }
+    
+    // Attach event listeners separately for login and register forms
+    document.querySelector('.loginForm form').onsubmit = (event) => hashPasswordAndSubmit(event, "login");
+    document.querySelector('.registerForm form').onsubmit = (event) => hashPasswordAndSubmit(event, "register");
+    
 
     // SHA-256 hashing function
     async function sha256(message) {
