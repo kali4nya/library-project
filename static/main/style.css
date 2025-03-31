@@ -1,15 +1,3 @@
-body{
-    font-family: Arial, sans-serif;
-    background-color: #1d1b17;
-    color: rgb(230, 230, 230);
-    height: 100dvh;
-    margin: 0;
-}
-
-h1{
-    color: white
-}
-
 .grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -75,4 +63,51 @@ button:active {
 
 li{
     color: #e28801;
+}
+
+body {
+    background-color: #1c1c1c;
+    color: white;
+    font-family: Arial, sans-serif;
+    height: 100dvh;
+}
+
+h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.sparkle {
+    display: inline-block;
+    color: #fff;
+    text-shadow: 
+        0 0 5px #fff, 
+        0 0 10px #ff0, 
+        0 0 15px #ff0, 
+        0 0 20px #ff0;
+    animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        text-shadow: 
+            0 0 5px #fff, 
+            0 0 10px #ff0, 
+            0 0 15px #ff0, 
+            0 0 20px #ff0;
+    }
+    50% {
+        text-shadow: 
+            0 0 10px #fff, 
+            0 0 15px #ff0, 
+            0 0 25px #ff0, 
+            0 0 30px #ff0;
+    }
+    100% {
+        text-shadow: 
+            0 0 5px #fff, 
+            0 0 10px #ff0, 
+            0 0 15px #ff0, 
+            0 0 20px #ff0;
+    }
 }

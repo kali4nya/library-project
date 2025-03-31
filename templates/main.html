@@ -13,13 +13,23 @@
     <link rel="icon" href="static/favicon.png" type="image/x-icon">
     <!-- css-->
     <link rel="stylesheet"
-        href="{{ url_for('static', filename='adminPanel/style.css') }}">
+        href="{{ url_for('static', filename='main/style.css') }}">
     <!-- fonts -->
 </head>
 
 <body>
-    <h1>Hello, you are now logged in as normal user, your permission level is 1</h1>
+    <h1>Hello <span class="sparkle">{{name}}</span>, welcome yo your library page</h1>
+    <div class="books">
+        <h1>Books in the Library</h1>
+        <ul>
+            {% for book in books %}
+            <li>{{ book }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
     <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
     <script src="{{ url_for('static', filename='main/script.js') }}"></script>
 </body>
 </html>

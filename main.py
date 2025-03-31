@@ -90,7 +90,9 @@ def main():
     if 'user' in session:
         username = session['user']
         if username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
-            return render_template("main.html")
+            books = lib.show_books()
+            name = USERSdictionary[username]['name']
+            return render_template("main.html", books=books, name=name)
     return redirect(url_for('home'))
 
 @app.route('/adminPanel')
