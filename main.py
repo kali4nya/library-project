@@ -135,9 +135,9 @@ def add_user():
 @app.route('/borrow_book', methods=['POST'])
 def borrow_book():
     book_title = request.form['title']
-    user_raw = request.form['user_full']
+    username = request.form['username']
     
-    user = lib.find_user(user_raw.split(' ')[0], user_raw.split(' ')[1])
+    user = lib.find_user(username)
     book = lib.find_book(book_title)
     
     lib.borrow_book(user, book)
@@ -146,9 +146,9 @@ def borrow_book():
 @app.route('/return_book', methods=['POST'])
 def return_book():
     book_title = request.form['title']
-    user_raw = request.form['user_full']
-    
-    user = lib.find_user(user_raw.split(' ')[0], user_raw.split(' ')[1])
+    username = request.form['username']
+
+    user = lib.find_user(username)
     book = lib.find_book(book_title)
     
     lib.return_book(user, book)

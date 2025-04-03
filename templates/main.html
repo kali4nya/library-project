@@ -20,10 +20,20 @@
 <body>
     <h1>Hello <span class="sparkle">{{name}}</span>, welcome yo your library page</h1>
     <div class="books">
-        <h1>Books in the Library</h1>
+        <h1>All books in the Library</h1>
         <ul>
             {% for book in books %}
             <li>{{ book }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="books">
+        <h1>Available books in the library</h1>
+        <ul>
+            {% for book in books%}
+                {% if book.available == True%}
+                    <li>{{ book }}</li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

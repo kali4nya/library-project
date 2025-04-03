@@ -49,10 +49,33 @@ class Library:
             print(f"An error occurred: {e}")
         
     def show_books(self):
+        # Load books from JSON
+        with open(Config.BOOKS_DIR, "r", encoding="utf-8") as f:
+            books_data = json.load(f)
+
+        # Update self.books with the latest book data
+        self.books = []  # Reset the list before populating it
+
+        for title, details in books_data.items():
+            book_entry = Book(title=title, author=details["author"], year=details["year"], available=details["available"])
+            self.books.append(book_entry)
+
         return self.books
     
     def show_users(self):
-        return self.users
+    # Load users from JSON
+        with open(Config.USERS_DIR, "r", encoding="utf-8") as f:
+            users_data = json.load(f)
+
+        # Update self.users with the latest user data
+        self.users = []  # Reset the list before populating it
+
+        for username, details in users_data.items():
+            user_entry = User(username=username, name=details["name"], surname=details["surname"], password=details["password"], permission_level=details["permission_level"])
+            user_entry.borrowed_books = details.get("borrowed_books", [])
+            self.users.append(user_entry)
+
+        return self.users  # Return the updated user list
     
     def find_book(self, title):
         for book in self.books:
@@ -60,11 +83,11 @@ class Library:
                 return book
         return "Book not found"
     
-    def find_user(self, user_name, user_surname):
+    def find_user(self, username):
         for user in self.users:
-            if user.name.lower() == user_name.lower() and user.surname.lower() == user_surname.lower():
+            if user.username == username:
                 return user
-        return "Book not found"
+        return "User not found"
     
     def serialize_users(self, user=None, all=True):
         if all:
@@ -73,7 +96,8 @@ class Library:
                     "name": u.name,
                     "surname": u.surname,
                     "password": u.password,
-                    "permission_level": u.permission_level
+                    "permission_level": u.permission_level,
+                    "borrowed_books": u.borrowed_books
                 }
                 for u in self.users
             }
@@ -88,7 +112,8 @@ class Library:
                         "name": u.name,
                         "surname": u.surname,
                         "password": u.password,
-                        "permission_level": u.permission_level
+                        "permission_level": u.permission_level,
+                        "borrowed_books": u.borrowed_books
                     }
                 }
 
