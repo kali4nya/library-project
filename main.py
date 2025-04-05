@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from classes import user
 from classes.library import Library
 from classes.book import Book
 from classes.user import User
@@ -9,6 +10,18 @@ import os
 #flask declaration
 app = Flask(__name__)
 app.secret_key = Config.FLASK_SECRET_KEY
+
+#custom jinja filters
+def split_first(value):
+    return str(value).split(',')[0]
+
+app.jinja_env.filters['split_first'] = split_first
+
+def js_escape(value):
+    return json.dumps(value)
+
+app.jinja_env.filters['js_escape'] = js_escape
+#end
 
 USERS_DIR = Config.USERS_DIR
 BOOKS_DIR = Config.BOOKS_DIR
@@ -92,7 +105,9 @@ def main():
         if username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
             books = lib.show_books()
             name = USERSdictionary[username]['name']
-            return render_template("main.html", books=books, name=name)
+            globals()["USERSdictionary"] = load_users_dictionary()
+            user = USERSdictionary[username]
+            return render_template("main.html", books=books, name=name, user=user)
     return redirect(url_for('home'))
 
 @app.route('/adminPanel')
@@ -108,40 +123,59 @@ def adminPanel():
 
 @app.route('/add_book', methods=['POST'])
 def add_book():
-    title = request.form['title']
-    author = request.form['author']
-    year = request.form['year']
-    book = Book(title, author, year)
-    lib.add_book(book)
-    lib.save_books_to_json(all=False, book=book)
-    return redirect(url_for('adminPanel'))
+    if 'user' in session:
+        username = session['user']
+        if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
+            title = request.form['title']
+            author = request.form['author']
+            year = request.form['year']
+            book = Book(title, author, year)
+            lib.add_book(book)
+            lib.save_books_to_json(all=False, book=book)
+            return redirect(url_for('adminPanel'))
+    return redirect(url_for('home'))
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
-    username = request.form['username']
-    name = request.form['name']
-    surname = request.form['surname']
-    password = request.form['password'] ###
-    try:
-        permission_level = int(request.form['permission_level'])
-    except:
-        permission_level = 1
-    user = User(username=username, name=name, surname=surname, password=password, permission_level=permission_level)
-    lib.add_user(user)
-    lib.save_users_to_json(all=False, user=user)
-    globals()["USERSdictionary"] = load_users_dictionary()
-    return redirect(url_for('adminPanel'))
+    if 'user' in session:
+        username = session['user']
+        if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
+            username = request.form['username']
+            name = request.form['name']
+            surname = request.form['surname']
+            password = request.form['password'] ###
+            try:
+                permission_level = int(request.form['permission_level'])
+            except:
+                permission_level = 1
+            user = User(username=username, name=name, surname=surname, password=password, permission_level=permission_level)
+            lib.add_user(user)
+            lib.save_users_to_json(all=False, user=user)
+            globals()["USERSdictionary"] = load_users_dictionary()
+            return redirect(url_for('adminPanel'))
+    return redirect(url_for('home'))
 
 @app.route('/borrow_book', methods=['POST'])
 def borrow_book():
-    book_title = request.form['title']
-    username = request.form['username']
-    
-    user = lib.find_user(username)
-    book = lib.find_book(book_title)
-    
-    lib.borrow_book(user, book)
-    return redirect(url_for('adminPanel'))
+    if 'user' in session:
+        username = session['user']
+        if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
+            book_title = request.form['title']
+            username = request.form['username']
+            
+            user = lib.find_user(username)
+            book = lib.find_book(book_title)
+            
+            lib.borrow_book(user, book)
+            return redirect(url_for('adminPanel'))
+        elif username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
+            book_title = request.form['title']
+            user = lib.find_user(username)
+            book = lib.find_book(book_title)
+            
+            lib.borrow_book(user, book)
+            return redirect(url_for('main'))
+    return redirect(url_for('home'))
 
 @app.route('/return_book', methods=['POST'])
 def return_book():

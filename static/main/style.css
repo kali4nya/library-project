@@ -38,26 +38,27 @@ input:focus {
 }
 
 button{
-    background-color: #65d2f3;
+    background-color: #ef83e0;
     border: 1px solid transparent;
-    border-radius: .70rem;
+    border-radius: .2rem;
     box-sizing: border-box;
     color: #1d1b17;
     cursor: pointer;
-    font-size: 1vw;
+    font-size: 0.9vw;
     font-weight: 600;
-    padding: .3rem 1rem;
+    padding: .1rem .1rem;
     user-select: none;
     transition: transform 0.01s ease-in-out, background-color 0.2s ease-in-out;
     margin-left: 0.3vw;
+    margin-bottom: auto;
 }
 button:hover{
-    background-color: #6699f8;
+    background-color: #f866aa;
     transform: scale(1.04);
 }
 button:active {
     transform: scale(0.98);
-    background-color: #a06df1;
+    background-color: #f16d71;
     transition: none;
 }
 
@@ -75,6 +76,16 @@ body {
 h1 {
     font-size: 3rem;
     text-align: center;
+}
+
+h2 {
+    font-size: 2.1rem;
+    text-align: center;
+}
+
+.books{
+    align-items: center;
+    align-self: center;
 }
 
 .sparkle {
