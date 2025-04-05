@@ -1,15 +1,13 @@
 from config import Config
 import json
-
 class User:
-    def __init__(self, username, name, surname, password, permission_level = 1):
+    def __init__(self, username, name, surname, password, permission_level=1, borrowed_books=None):
         self.username = username
         self.name = name
         self.surname = surname
         self.password = password
         self.permission_level = permission_level
-        #
-        self.borrowed_books = []
+        self.borrowed_books = borrowed_books if borrowed_books is not None else []
         
     def __str__(self):
         return f"{self.username} | {self.name} {self.surname}{(' | Borrowed books: ' +', '.join(self.borrowed_books)) if self.borrowed_books else ''}"

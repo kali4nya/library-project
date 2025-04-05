@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <h1>Hello <span class="sparkle">{{name}}</span>, welcome yo your library page</h1>
+    <h1>Hello <span class="sparkle">{{user.name}}</span>, welcome to your library page</h1>
     <div class="books">
         <h2>All books in the Library</h2>
         <ul>
@@ -47,7 +47,13 @@
         <h2>Your borrowed books</h2>
         <ul>
             {% for book in user.borrowed_books %}
-                <li>    {{book}}    </li>
+                <li>
+                    {{book}}
+                    <form method="post" action="{{ url_for('return_book') }}" style="display: inline;">
+                        <input type="hidden" name="title" value="{{ book }}">
+                        <button type="submit">Return</button>
+                    </form>
+                </li>
             {% endfor %}
         </ul>
     </div>

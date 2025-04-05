@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from classes import user
 from classes.library import Library
 from classes.book import Book
 from classes.user import User
@@ -28,21 +27,24 @@ BOOKS_DIR = Config.BOOKS_DIR
 
 def load_users_list():
     with open(USERS_DIR, "r", encoding="utf-8") as f:
-        users_data = json.load(f)  # Load JSON as a dictionary
+        users_data = json.load(f)
 
     users = [
-        User(username, data["name"], data["surname"], data["password"], data["permission_level"])
+        User(
+            username,
+            data["name"],
+            data["surname"],
+            data["password"],
+            data["permission_level"],
+            data.get("borrowed_books", [])  # fallback to empty list if missing
+        )
         for username, data in users_data.items()
     ]
-
     return users
 
 def load_users_dictionary():
     with open(USERS_DIR) as f:
         return json.load(f)
-
-USERSdictionary = load_users_dictionary()
-USERSlist = load_users_list()
 
 def load_books_list():
     """Loads books from JSON and converts them into Book objects."""
@@ -53,6 +55,9 @@ def load_books_list():
         books_data = json.load(f)
 
     return [Book(title, data["author"], data["year"], data["available"]) for title, data in books_data.items()]
+
+USERSdictionary = load_users_dictionary()
+USERSlist = load_users_list()
 
 # Load books into a list
 BOOKSlist = load_books_list()
@@ -104,10 +109,10 @@ def main():
         username = session['user']
         if username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
             books = lib.show_books()
-            name = USERSdictionary[username]['name']
             globals()["USERSdictionary"] = load_users_dictionary()
+            globals()["USERSlist"] = load_users_list()
             user = USERSdictionary[username]
-            return render_template("main.html", books=books, name=name, user=user)
+            return render_template("main.html", books=books, user=user)
     return redirect(url_for('home'))
 
 @app.route('/adminPanel')
@@ -179,14 +184,26 @@ def borrow_book():
 
 @app.route('/return_book', methods=['POST'])
 def return_book():
-    book_title = request.form['title']
-    username = request.form['username']
-
-    user = lib.find_user(username)
-    book = lib.find_book(book_title)
-    
-    lib.return_book(user, book)
-    return redirect(url_for('adminPanel'))
+    if 'user' in session:
+        username = session['user']
+        if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
+            book_title = request.form['title']
+            username = request.form['username']
+            
+            user = lib.find_user(username)
+            book = lib.find_book(book_title)
+            
+            lib.return_book(user, book)
+            return redirect(url_for('adminPanel'))
+        elif username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
+            book_title = request.form['title']
+            
+            user = lib.find_user(username)
+            book = lib.find_book(book_title)
+            
+            lib.return_book(user, book)
+            return redirect(url_for('main'))
+    return redirect(url_for('home'))
 
 @app.route('/logout')
 def logout():

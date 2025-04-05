@@ -87,7 +87,7 @@ class Library:
         for user in self.users:
             if user.username == username:
                 return user
-        return "User not found"
+        return None
     
     def serialize_users(self, user=None, all=True):
         if all:
