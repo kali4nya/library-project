@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from matplotlib.style import available
 from rapidfuzz import fuzz
 from classes.library import Library
 from classes.book import Book
