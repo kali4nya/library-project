@@ -27,7 +27,7 @@
     margin: 0.5vw 0.1vw 0.5vw 0.3vw;
     width: fit-content;
     font-weight: 600;
-    max-width: max-content;
+    max-width: 40vw;
 }
 
 .books-borrowed {
@@ -66,6 +66,7 @@
     font-weight: 600;
     width: -webkit-fill-available;
     max-width: max-content;
+    margin-bottom: 3vw;
 }
 
 input {
@@ -204,4 +205,10 @@ h2 {
 .highlight {
     font-weight: bold;
     background-color: yellow;
+}
+
+.ai-overview {
+    margin-top: 6px;
+    font-style: italic;
+    color: #8a8a8a;
 }

@@ -1,9 +1,12 @@
+from email import message
+import re
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from rapidfuzz import fuzz
 from classes.library import Library
 from classes.book import Book
 from classes.user import User
 from config import Config
+import requests
 import json
 import os
 
@@ -12,6 +15,41 @@ app = Flask(__name__)
 app.secret_key = Config.FLASK_SECRET_KEY
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SECURE'] = True
+
+#loading openai API key
+openai_API_key = None
+ENABLE_AI_BOOK_OVERVIEW = False
+with open("openai_API_key.env", "r") as f:
+    openai_API_key = f.read().strip()
+if openai_API_key:
+    ENABLE_AI_BOOK_OVERVIEW = Config.ENABLE_AI_BOOK_OVERVIEW
+#declaring openai model
+if ENABLE_AI_BOOK_OVERVIEW:
+    model = 'gpt-3.5-turbo' #gpt model
+    temperature = 0.65 #keep within 0 - 1 higher values can cause crashing
+#end
+
+def get_ai_book_overview(book):
+    if not ENABLE_AI_BOOK_OVERVIEW:
+        return None
+    if openai_API_key:
+        messages = [
+            {"role": "user", "content": "I will give you a book title, the book's author, and the release year of the book. Give me a swift overview of the book(include it's genre)(KEEP IT SHORT):\n" + book}
+        ]
+        
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + openai_API_key,
+        }
+        json_data = {
+            'model': model,
+            'messages':
+                messages
+            ,
+            'temperature': temperature,
+        }
+        response = requests.post('https://api.openai.com/v1/chat/completions', headers=headers, json=json_data)
+        return response.json()['choices'][0]['message']['content']
 
 #custom jinja filters
 def split_first(value):
@@ -131,55 +169,67 @@ def main():
                 'values': [available_books, unavailable_books]
             }
             #chart end
-            return render_template("main.html", books=books, user=user, chart_data=chart_data)
+            return render_template("main.html", books=books, user=user, chart_data=chart_data, ai_overwiew=ENABLE_AI_BOOK_OVERVIEW)
     return redirect(url_for('home'))
 
 @app.route('/search')
 def search():
-    query = request.args.get('q', '').lower()
-    if not query:
-        return jsonify([])
+    if 'user' in session:
+        query = request.args.get('q', '').lower()
+        if not query:
+            return jsonify([])
 
-    results = []
-    
-    for title, details in BOOKSdictionary.items():
-        combined = f"{title} {details['author']} {details['year']}".lower()
+        results = []
         
-        # Exact match check for title, author, and year individually
-        title_exact_score = fuzz.ratio(query, title.lower())
-        author_exact_score = fuzz.ratio(query, details['author'].lower())
-        year_exact_score = fuzz.ratio(query, str(details['year']).lower())
-        
-        # Add results where any field has an exact match (score 100)
-        if title_exact_score == 100 or author_exact_score == 100 or year_exact_score == 100:
-            results.append({
-                "title": title,
-                "author": details["author"],
-                "year": details["year"],
-                "available": details["available"],
-                "title_exact_score": title_exact_score,
-                "author_exact_score": author_exact_score,
-                "year_exact_score": year_exact_score,
-                "score": max(title_exact_score, author_exact_score, year_exact_score)  # Take the highest score
-            })
-        else:
-            # Fuzzy match for combined fields if no exact match
-            fuzzy_score = fuzz.token_sort_ratio(query, combined)
-            if fuzzy_score >= 35:  # Adjust threshold for fuzzy matches
+        for title, details in BOOKSdictionary.items():
+            combined = f"{title} {details['author']} {details['year']}".lower()
+            
+            # Exact match check for title, author, and year individually
+            title_exact_score = fuzz.ratio(query, title.lower())
+            author_exact_score = fuzz.ratio(query, details['author'].lower())
+            year_exact_score = fuzz.ratio(query, str(details['year']).lower())
+            
+            # Add results where any field has an exact match (score 100)
+            if title_exact_score == 100 or author_exact_score == 100 or year_exact_score == 100:
                 results.append({
                     "title": title,
                     "author": details["author"],
                     "year": details["year"],
                     "available": details["available"],
-                    "score": fuzzy_score,
                     "title_exact_score": title_exact_score,
                     "author_exact_score": author_exact_score,
-                    "year_exact_score": year_exact_score
+                    "year_exact_score": year_exact_score,
+                    "score": max(title_exact_score, author_exact_score, year_exact_score)  # Take the highest score
                 })
+            else:
+                # Fuzzy match for combined fields if no exact match
+                fuzzy_score = fuzz.token_sort_ratio(query, combined)
+                if fuzzy_score >= 31:  # Adjust threshold for fuzzy matches
+                    results.append({
+                        "title": title,
+                        "author": details["author"],
+                        "year": details["year"],
+                        "available": details["available"],
+                        "score": fuzzy_score,
+                        "title_exact_score": title_exact_score,
+                        "author_exact_score": author_exact_score,
+                        "year_exact_score": year_exact_score
+                    })
 
-    # Sort results based on score, prioritize exact matches
-    results.sort(key=lambda x: x['score'], reverse=True)
-    return jsonify(results[:5])  # Limit to top 5 results
+        # Sort results based on score, prioritize exact matches
+        results.sort(key=lambda x: x['score'], reverse=True)
+        return jsonify(results[:5])  # Limit to top 5 results
+    return jsonify([])
+
+@app.route('/book_overview', methods=['POST'])
+def book_overview():
+    title = request.form.get('title')
+    if ENABLE_AI_BOOK_OVERVIEW:
+        book = lib.find_book(title)
+        if book:
+            overview = get_ai_book_overview(f"{book.title}, {book.author}, {book.year}")
+            return jsonify({"overview": overview})
+    return jsonify({"overview": None})
 
 @app.route('/adminPanel')
 def adminPanel():

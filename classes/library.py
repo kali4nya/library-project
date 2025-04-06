@@ -81,7 +81,7 @@ class Library:
         for book in self.books:
             if book.title.lower() == title.lower():
                 return book
-        return "Book not found"
+        return None
     
     def find_user(self, username):
         for user in self.users:

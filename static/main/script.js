@@ -1,3 +1,4 @@
+//search
 const searchInput = document.getElementById('search');
 const resultsEl = document.getElementById('results');
 const spinner = document.getElementById('spinner');
@@ -103,3 +104,44 @@ function renderResults(results, query) {
         resultsEl.appendChild(li);
     });
 }
+
+// ai overview
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('form[action="/book_overview"]').forEach(form => {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const title = form.querySelector('input[name="title"]').value;
+
+            let overviewContainer = form.parentElement.querySelector('.ai-overview');
+            if (!overviewContainer) {
+                overviewContainer = document.createElement('div');
+                overviewContainer.className = 'ai-overview';
+                overviewContainer.textContent = 'Fetching overview...';
+                form.parentElement.appendChild(overviewContainer);
+            } else {
+                overviewContainer.textContent = 'Fetching overview...';
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ title })
+                });
+
+                const data = await response.json();
+                if (data.overview) {
+                    overviewContainer.textContent = data.overview;
+                } else {
+                    overviewContainer.textContent = 'No overview found.';
+                }
+            } catch (err) {
+                console.error('Failed to fetch overview:', err);
+                overviewContainer.textContent = 'Error fetching overview.';
+            }
+        });
+    });
+});
