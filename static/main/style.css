@@ -7,9 +7,19 @@
     display: grid;
 }
 
-.books, .book_adding, .users, .user_adding, .book_borrowing, .book_returning{
-    display: inline-block;
-    justify-content: center;
+.container-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: left;
+}
+
+.container-stacking {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.books, .book_adding, .users, .user_adding, .book_borrowing, .book_returning {
     border: rgb(212, 212, 212) 4px solid;
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(251, 134, 0, 0.767), 0 0 5px rgba(218, 0, 0, 0.4);
@@ -17,8 +27,28 @@
     margin: 0.5vw 0.1vw 0.5vw 0.3vw;
     width: fit-content;
     font-weight: 600;
-    width: -webkit-fill-available;
     max-width: max-content;
+}
+
+.books-borrowed {
+    border: rgb(212, 212, 212) 4px solid;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(251, 134, 0, 0.767), 0 0 5px rgba(218, 0, 0, 0.4);
+    padding: 1vw;
+    margin: 0.5vw 0.1vw 0.5vw 0.3vw;
+    font-weight: 600;
+    width: fit-content;
+    max-width: max-content;
+}
+
+.books-search {
+    border: rgb(212, 212, 212) 4px solid;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(251, 134, 0, 0.767), 0 0 5px rgba(218, 0, 0, 0.4);
+    padding: 1vw;
+    margin: 0.5vw 0.1vw 0.5vw 0.3vw;
+    width: 20vw;
+    max-width: 40vw;
 }
 
 input {
@@ -44,7 +74,6 @@ button{
     box-sizing: border-box;
     color: #1d1b17;
     cursor: pointer;
-    font-size: 0.9vw;
     font-weight: 600;
     padding: .1rem .1rem;
     user-select: none;
@@ -76,6 +105,7 @@ body {
 h1 {
     font-size: 3rem;
     text-align: center;
+    margin-bottom: 8vh;
 }
 
 h2 {
@@ -121,4 +151,40 @@ h2 {
             0 0 15px #ff0, 
             0 0 20px #ff0;
     }
+}
+
+#search {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#spinner {
+    margin: 10px 0;
+    font-style: italic;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#results {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#results li {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+#results li.active {
+    background-color: #f0f0f0;
+}
+
+.highlight {
+    font-weight: bold;
+    background-color: yellow;
 }

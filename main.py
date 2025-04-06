@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from rapidfuzz import fuzz
 from classes.library import Library
 from classes.book import Book
 from classes.user import User
@@ -9,6 +10,8 @@ import os
 #flask declaration
 app = Flask(__name__)
 app.secret_key = Config.FLASK_SECRET_KEY
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = True
 
 #custom jinja filters
 def split_first(value):
@@ -56,11 +59,17 @@ def load_books_list():
 
     return [Book(title, data["author"], data["year"], data["available"]) for title, data in books_data.items()]
 
+def load_books_dictionary():
+    with open(BOOKS_DIR) as f:
+        return json.load(f)
+
+#load users
 USERSdictionary = load_users_dictionary()
 USERSlist = load_users_list()
 
-# Load books into a list
+#load books
 BOOKSlist = load_books_list()
+BOOKSdictionary = load_books_dictionary()
 
 #lib initialization
 lib = Library()
@@ -111,9 +120,58 @@ def main():
             books = lib.show_books()
             globals()["USERSdictionary"] = load_users_dictionary()
             globals()["USERSlist"] = load_users_list()
+            globals()["BOOKSdictionary"] = load_books_dictionary()
+            globals()["BOOKSlist"] = load_books_list()
             user = USERSdictionary[username]
             return render_template("main.html", books=books, user=user)
     return redirect(url_for('home'))
+
+@app.route('/search')
+def search():
+    query = request.args.get('q', '').lower()
+    if not query:
+        return jsonify([])
+
+    results = []
+    
+    for title, details in BOOKSdictionary.items():
+        combined = f"{title} {details['author']} {details['year']}".lower()
+        
+        # Exact match check for title, author, and year individually
+        title_exact_score = fuzz.ratio(query, title.lower())
+        author_exact_score = fuzz.ratio(query, details['author'].lower())
+        year_exact_score = fuzz.ratio(query, str(details['year']).lower())
+        
+        # Add results where any field has an exact match (score 100)
+        if title_exact_score == 100 or author_exact_score == 100 or year_exact_score == 100:
+            results.append({
+                "title": title,
+                "author": details["author"],
+                "year": details["year"],
+                "available": details["available"],
+                "title_exact_score": title_exact_score,
+                "author_exact_score": author_exact_score,
+                "year_exact_score": year_exact_score,
+                "score": max(title_exact_score, author_exact_score, year_exact_score)  # Take the highest score
+            })
+        else:
+            # Fuzzy match for combined fields if no exact match
+            fuzzy_score = fuzz.token_sort_ratio(query, combined)
+            if fuzzy_score >= 35:  # Adjust threshold for fuzzy matches
+                results.append({
+                    "title": title,
+                    "author": details["author"],
+                    "year": details["year"],
+                    "available": details["available"],
+                    "score": fuzzy_score,
+                    "title_exact_score": title_exact_score,
+                    "author_exact_score": author_exact_score,
+                    "year_exact_score": year_exact_score
+                })
+
+    # Sort results based on score, prioritize exact matches
+    results.sort(key=lambda x: x['score'], reverse=True)
+    return jsonify(results[:5])  # Limit to top 5 results
 
 @app.route('/adminPanel')
 def adminPanel():
@@ -175,6 +233,7 @@ def borrow_book():
             return redirect(url_for('adminPanel'))
         elif username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
             book_title = request.form['title']
+            
             user = lib.find_user(username)
             book = lib.find_book(book_title)
             

@@ -29,7 +29,7 @@ class Library:
         
     def borrow_book(self, user, book):
         try:
-            if book.available and len(user.borrowed_books) <= Config.BORROW_LIMIT:
+            if book.available and len(user.borrowed_books) <= Config.BORROW_LIMIT - 1:
                 book.borrow_book()
                 user.add_book(book)
             else:

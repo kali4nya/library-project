@@ -33,5 +33,70 @@
         "author": "Brian Catling",
         "year": "2012",
         "available": true
+    },
+    "Jam": {
+        "author": "Yahtzee Croshaw",
+        "year": "2012",
+        "available": true
+    },
+    "The Man Who Spoke Snakish": {
+        "author": "Andrus Kivir\u00e4hk",
+        "year": "2007",
+        "available": true
+    },
+    "The Master and His Emissary": {
+        "author": "Iain McGilchrist",
+        "year": "2009",
+        "available": true
+    },
+    "The Book of Disquiet": {
+        "author": "Fernando Pessoa",
+        "year": "1982",
+        "available": true
+    },
+    "The City & The City": {
+        "author": "China Mi\u00e9ville",
+        "year": "2009",
+        "available": true
+    },
+    "The House of the Spirits": {
+        "author": "Isabel Allende",
+        "year": "1982",
+        "available": true
+    },
+    "The Black Prism": {
+        "author": "Brent Weeks",
+        "year": "2010",
+        "available": true
+    },
+    "The Book Thief": {
+        "author": "Markus Zusak",
+        "year": "2005",
+        "available": true
+    },
+    "Everything Is Illuminated": {
+        "author": "Jonathan Safran Foer",
+        "year": "2002",
+        "available": true
+    },
+    "1984": {
+        "author": "George Orwell",
+        "year": "1949",
+        "available": true
+    },
+    "Brave New World": {
+        "author": "Aldous Huxley",
+        "year": "1932",
+        "available": true
+    },
+    "Moby-Dick": {
+        "author": "Herman Melville",
+        "year": "1851",
+        "available": true
+    },
+    "Catch-22": {
+        "author": "Joseph Heller",
+        "year": "1961",
+        "available": true
     }
 }

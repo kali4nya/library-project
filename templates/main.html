@@ -19,46 +19,56 @@
 
 <body>
     <h1>Hello <span class="sparkle">{{user.name}}</span>, welcome to your library page</h1>
-    <div class="books">
-        <h2>All books in the Library</h2>
-        <ul>
-            {% for book in books %}
-            <li>{{ book }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="books">
-        <h2>Available books in the library</h2>
-        <ul>
-            {% for book in books %}
-                {% if book.available == True %}
-                    <li>
-                        {{ book|split_first }}
-                        <form method="post" action="{{ url_for('borrow_book') }}" style="display: inline;">
-                            <input type="hidden" name="title" value="{{ book.title }}">
-                            <button type="submit">Borrow</button>
-                        </form>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-    <div class="books">
-        <h2>Your borrowed books</h2>
-        <ul>
-            {% for book in user.borrowed_books %}
-                <li>
-                    {{book}}
-                    <form method="post" action="{{ url_for('return_book') }}" style="display: inline;">
-                        <input type="hidden" name="title" value="{{ book }}">
-                        <button type="submit">Return</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
+    <div class="container-main">
+        <div class="books">
+            <h2>All books in the Library</h2>
+            <ul>
+                {% for book in books %}
+                <li>{{ book }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="books">
+            <h2>Available books in the library</h2>
+            <ul>
+                {% for book in books %}
+                    {% if book.available == True %}
+                        <li>
+                            {{ book|split_first }}
+                            <form method="post" action="{{ url_for('borrow_book') }}" style="display: inline;">
+                                <input type="hidden" name="title" value="{{ book.title }}">
+                                <button type="submit">Borrow</button>
+                            </form>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="container-stacking">
+            <div class="books-borrowed">
+                <h2>Your borrowed books</h2>
+                <ul>
+                    {% for book in user.borrowed_books %}
+                        <li>
+                            {{book}}
+                            <form method="post" action="{{ url_for('return_book') }}" style="display: inline;">
+                                <input type="hidden" name="title" value="{{ book }}">
+                                <button type="submit">Return</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="books-search">
+                <h2>Book search</h2>
+                <input type="text" id="search" placeholder="Type to search..." autocomplete="off">
+                <div id="spinner" class="hidden">Loading...</div>
+                <ul id="results"></ul>
+            </div>
+        </div>
     </div>
     <div>
-    <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
     </div>
     <script src="{{ url_for('static', filename='main/script.js') }}"></script>
 </body>
