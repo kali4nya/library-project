@@ -42,7 +42,7 @@ h1{
     width: fit-content;
     font-weight: 600;
     width: -webkit-fill-available;
-    max-width: max-content;
+    max-width: 35vw;
 }
 
 .chart{
