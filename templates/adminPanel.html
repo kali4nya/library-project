@@ -19,7 +19,7 @@
 
 <body>
     <div class="grid">
-        <div>
+        <div class="container-main">
             <div class="books">
                 <h1>Books in the Library</h1>
                 <ul>
@@ -28,13 +28,41 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="users">
-                <h1>Registered Users</h1>
-                <ul>
-                    {% for user in users %}
-                    <li>{{ user }}</li>
-                    {% endfor %}
-                </ul>
+            <div class="container-stacking">
+                <div class="users">
+                    <h1>Registered Users</h1>
+                    <ul>
+                        {% for user in users %}
+                        <li>{{ user }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="chart">
+                    <canvas id="myPieChart" width="250" height="250"></canvas>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    // Getting data from Jinja
+                    const labels = {{ chart_data['labels'] | tojson }};
+                    const data = {{ chart_data['values'] | tojson }};
+
+                    const ctx = document.getElementById('myPieChart').getContext('2d');
+                    const myPieChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Available books',
+                                data: data,
+                                backgroundColor: ['#2ad471', '#d42a41'],
+                                hoverOffset: 10
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                        }
+                    });
+                </script>
             </div>
         </div>
         <div class="col">

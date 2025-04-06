@@ -12,7 +12,7 @@
     "The Catcher in the Rye": {
         "author": "J.D. Salinger",
         "year": 1951,
-        "available": true
+        "available": false
     },
     "Middlesex": {
         "author": "Jeffrey Eugenides",
@@ -42,7 +42,7 @@
     "The Man Who Spoke Snakish": {
         "author": "Andrus Kivir\u00e4hk",
         "year": "2007",
-        "available": true
+        "available": false
     },
     "The Master and His Emissary": {
         "author": "Iain McGilchrist",
@@ -77,7 +77,7 @@
     "Everything Is Illuminated": {
         "author": "Jonathan Safran Foer",
         "year": "2002",
-        "available": true
+        "available": false
     },
     "1984": {
         "author": "George Orwell",

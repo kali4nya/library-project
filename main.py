@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from matplotlib.style import available
 from rapidfuzz import fuzz
 from classes.library import Library
 from classes.book import Book
@@ -123,7 +124,15 @@ def main():
             globals()["BOOKSdictionary"] = load_books_dictionary()
             globals()["BOOKSlist"] = load_books_list()
             user = USERSdictionary[username]
-            return render_template("main.html", books=books, user=user)
+            #chart
+            available_books = sum(1 for book in books if book.available)
+            unavailable_books = sum(1 for book in books if not book.available)
+            chart_data = {
+                'labels': ['Available', 'Unavailable'],
+                'values': [available_books, unavailable_books]
+            }
+            #chart end
+            return render_template("main.html", books=books, user=user, chart_data=chart_data)
     return redirect(url_for('home'))
 
 @app.route('/search')
@@ -181,7 +190,15 @@ def adminPanel():
         if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
             books = lib.show_books()
             users = lib.show_users()
-            return render_template("adminPanel.html", books=books, users=users)
+            #chart
+            available_books = sum(1 for book in books if book.available)
+            unavailable_books = sum(1 for book in books if not book.available)
+            chart_data = {
+                'labels': ['Available', 'Unavailable'],
+                'values': [available_books, unavailable_books]
+            }
+            #chart end
+            return render_template("adminPanel.html", books=books, users=users, chart_data=chart_data)
     return redirect(url_for('home'))
 
 @app.route('/add_book', methods=['POST'])
