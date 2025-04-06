@@ -223,12 +223,14 @@ def search():
 
 @app.route('/book_overview', methods=['POST'])
 def book_overview():
-    title = request.form.get('title')
-    if ENABLE_AI_BOOK_OVERVIEW:
-        book = lib.find_book(title)
-        if book:
-            overview = get_ai_book_overview(f"{book.title}, {book.author}, {book.year}")
-            return jsonify({"overview": overview})
+    if 'user' in session:
+        title = request.form.get('title')
+        if ENABLE_AI_BOOK_OVERVIEW:
+            book = lib.find_book(title)
+            if book:
+                overview = get_ai_book_overview(f"{book.title}, {book.author}, {book.year}")
+                return jsonify({"overview": overview})
+        return jsonify({"overview": None})
     return jsonify({"overview": None})
 
 @app.route('/adminPanel')
