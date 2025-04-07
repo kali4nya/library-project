@@ -1,5 +1,4 @@
 from email import message
-import re
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from rapidfuzz import fuzz
 from classes.library import Library
