@@ -16,8 +16,11 @@ app.config['SESSION_COOKIE_SECURE'] = True
 #loading openai API key
 openai_API_key = None
 ENABLE_AI_BOOK_OVERVIEW = False
-with open("openai_API_key.env", "r") as f:
-    openai_API_key = f.read().strip()
+try:
+    with open("openai_API_key.env", "r") as f:
+        openai_API_key = f.read().strip()
+except FileNotFoundError:
+    print("openai_API_key.env file not found. AI book overview will be disabled.")
 if openai_API_key:
     ENABLE_AI_BOOK_OVERVIEW = Config.ENABLE_AI_BOOK_OVERVIEW
 #declaring openai model
