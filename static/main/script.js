@@ -145,3 +145,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+//fixes laggy loading of the page cause of the animated favicon by loading it when the page fully loads (firefox only)
+window.addEventListener('load', function() {
+    const favicon = document.createElement('link');
+    favicon.rel = 'icon';
+    favicon.href = 'static/animated_enchanted_book_favicon.png';
+    document.head.appendChild(favicon);
+});

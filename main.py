@@ -1,11 +1,9 @@
-from email import message
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from rapidfuzz import fuzz
 from classes.library import Library
 from classes.book import Book
 from classes.user import User
 from config import Config
-import requests
 import json
 import os
 
@@ -27,28 +25,6 @@ if ENABLE_AI_BOOK_OVERVIEW:
     model = 'gpt-3.5-turbo' #gpt model
     temperature = 0.65 #keep within 0 - 1 higher values can cause crashing
 #end
-
-def get_ai_book_overview(book):
-    if not ENABLE_AI_BOOK_OVERVIEW:
-        return None
-    if openai_API_key:
-        messages = [
-            {"role": "user", "content": "I will give you a book title, the book's author, and the release year of the book. Give me a swift overview of the book(include it's genre)(KEEP IT SHORT):\n" + book}
-        ]
-        
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + openai_API_key,
-        }
-        json_data = {
-            'model': model,
-            'messages':
-                messages
-            ,
-            'temperature': temperature,
-        }
-        response = requests.post('https://api.openai.com/v1/chat/completions', headers=headers, json=json_data)
-        return response.json()['choices'][0]['message']['content']
 
 #custom jinja filters
 def split_first(value):
@@ -227,7 +203,7 @@ def book_overview():
         if ENABLE_AI_BOOK_OVERVIEW:
             book = lib.find_book(title)
             if book:
-                overview = get_ai_book_overview(f"{book.title}, {book.author}, {book.year}")
+                overview = lib.get_ai_book_overview(book=f"{book.title}, {book.author}, {book.year}", model=model, temperature=temperature, api_key=openai_API_key, ENABLED_AI_BOOK_OVERVIEW=ENABLE_AI_BOOK_OVERVIEW)
                 return jsonify({"overview": overview})
         return jsonify({"overview": None})
     return jsonify({"overview": None})

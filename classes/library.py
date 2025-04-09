@@ -3,6 +3,7 @@ from classes.book import Book
 from classes.user import User
 import json
 import os
+import requests
 
 class Library:
     def __init__(self, books = [], users = []):
@@ -206,3 +207,25 @@ class Library:
             print(f"Book data saved to {filename}")
         except Exception as e:
             print(f"Error saving book data: {e}")
+            
+    def get_ai_book_overview(self, book, model, temperature, api_key, ENABLED_AI_BOOK_OVERVIEW):
+        if not ENABLED_AI_BOOK_OVERVIEW:
+            return None
+        if api_key:
+            messages = [
+                {"role": "user", "content": "I will give you a book title, the book's author, and the release year of the book. Give me a swift overview of the book(include it's genre)(KEEP IT SHORT):\n" + book}
+            ]
+            
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_key,
+            }
+            json_data = {
+                'model': model,
+                'messages':
+                    messages
+                ,
+                'temperature': temperature,
+            }
+            response = requests.post('https://api.openai.com/v1/chat/completions', headers=headers, json=json_data)
+            return response.json()['choices'][0]['message']['content']

@@ -39,10 +39,9 @@ h1{
     box-shadow: 0 0 8px rgba(251, 134, 0, 0.767), 0 0 5px rgba(218, 0, 0, 0.4);
     padding: 1vw;
     margin: 0.5vw 0.1vw 0.5vw 0.3vw;
-    width: fit-content;
     font-weight: 600;
     width: -webkit-fill-available;
-    max-width: 35vw;
+    max-width: 38vw;
 }
 
 .chart{
