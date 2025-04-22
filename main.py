@@ -2,7 +2,7 @@ import json
 import os
 
 from dotenv import dotenv_values
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from rapidfuzz import fuzz
 
 from classes.book import Book
@@ -102,12 +102,15 @@ def home():
         if action == "login":
             username = request.form['username']
             password = request.form['password']
-            if username in USERSdictionary and USERSdictionary[username]["password"] == password:
+
+            # Find the user and verify password
+            user = lib.find_user(username)
+            if user and user.verify_password(password):
                 session['user'] = username  # Store session data
-                
-                if USERSdictionary[username]["permission_level"] < 3:
+
+                if user.permission_level < 3:
                     return redirect(url_for('main'))
-                elif USERSdictionary[username]["permission_level"] == 3:
+                elif user.permission_level == 3:
                     return redirect(url_for('adminPanel'))
             else:
                 return render_template('home.html', error="Invalid username or password!")
@@ -158,15 +161,15 @@ def search():
             return jsonify([])
 
         results = []
-        
+
         for title, details in BOOKSdictionary.items():
             combined = f"{title} {details['author']} {details['year']}".lower()
-            
+
             # Exact match check for title, author, and year individually
             title_exact_score = fuzz.ratio(query, title.lower())
             author_exact_score = fuzz.ratio(query, details['author'].lower())
             year_exact_score = fuzz.ratio(query, str(details['year']).lower())
-            
+
             # Add results where any field has an exact match (score 100)
             if title_exact_score == 100 or author_exact_score == 100 or year_exact_score == 100:
                 results.append({
@@ -268,22 +271,33 @@ def add_user():
 def borrow_book():
     if 'user' in session:
         username = session['user']
-        if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
+        current_user = lib.find_user(username)
+
+        if not current_user:
+            flash("User session invalid. Please log in again.")
+            return redirect(url_for('logout'))
+
+        if current_user.permission_level == 3:  # Admin
             book_title = request.form['title']
-            username = request.form['username']
-            
-            user = lib.find_user(username)
+            target_username = request.form['username']
+
+            target_user = lib.find_user(target_username)
             book = lib.find_book(book_title)
-            
-            lib.borrow_book(user, book)
+
+            result = lib.borrow_book(target_user, book)
+            if not result["success"]:
+                flash(result["message"])
+
             return redirect(url_for('adminPanel'))
-        elif username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
+        elif current_user.permission_level < 3:  # Regular user
             book_title = request.form['title']
-            
-            user = lib.find_user(username)
+
             book = lib.find_book(book_title)
-            
-            lib.borrow_book(user, book)
+
+            result = lib.borrow_book(current_user, book)
+            if not result["success"]:
+                flash(result["message"])
+
             return redirect(url_for('main'))
     return redirect(url_for('home'))
 
@@ -291,22 +305,33 @@ def borrow_book():
 def return_book():
     if 'user' in session:
         username = session['user']
-        if username in USERSdictionary and USERSdictionary[username]['permission_level'] == 3:
+        current_user = lib.find_user(username)
+
+        if not current_user:
+            flash("User session invalid. Please log in again.")
+            return redirect(url_for('logout'))
+
+        if current_user.permission_level == 3:  # Admin
             book_title = request.form['title']
-            username = request.form['username']
-            
-            user = lib.find_user(username)
+            target_username = request.form['username']
+
+            target_user = lib.find_user(target_username)
             book = lib.find_book(book_title)
-            
-            lib.return_book(user, book)
+
+            result = lib.return_book(target_user, book)
+            if not result["success"]:
+                flash(result["message"])
+
             return redirect(url_for('adminPanel'))
-        elif username in USERSdictionary and USERSdictionary[username]['permission_level'] < 3:
+        elif current_user.permission_level < 3:  # Regular user
             book_title = request.form['title']
-            
-            user = lib.find_user(username)
+
             book = lib.find_book(book_title)
-            
-            lib.return_book(user, book)
+
+            result = lib.return_book(current_user, book)
+            if not result["success"]:
+                flash(result["message"])
+
             return redirect(url_for('main'))
     return redirect(url_for('home'))
 

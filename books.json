@@ -22,7 +22,7 @@
     "The Dispossessed": {
         "author": "Ursula K. Le Guin",
         "year": 1974,
-        "available": true
+        "available": false
     },
     "The Three-Body Problem": {
         "author": "Liu Cixin",
@@ -47,12 +47,12 @@
     "The Master and His Emissary": {
         "author": "Iain McGilchrist",
         "year": "2009",
-        "available": true
+        "available": false
     },
     "The Book of Disquiet": {
         "author": "Fernando Pessoa",
         "year": "1982",
-        "available": true
+        "available": false
     },
     "The City & The City": {
         "author": "China Mi\u00e9ville",

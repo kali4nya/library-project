@@ -19,6 +19,16 @@
 
 <body>
     <h1>Hello <span class="sparkle">{{user.name}}</span>, welcome to your library page</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     <div class = "fixed-chart">
         <div class="chart">
             <canvas id="myPieChart" width="130" height="130"></canvas>
@@ -86,9 +96,16 @@
                 <ul>
                     {% for book in user.borrowed_books %}
                         <li>
-                            {{book}}
+                            {% if book is mapping %}
+                                {{ book.title }}
+                                {% if book.borrow_time %}
+                                    <span class="borrow-time">(Borrowed: {{ book.borrow_time }})</span>
+                                {% endif %}
+                            {% else %}
+                                {{ book }}
+                            {% endif %}
                             <form method="post" action="{{ url_for('return_book') }}" style="display: inline;">
-                                <input type="hidden" name="title" value="{{ book }}">
+                                <input type="hidden" name="title" value="{% if book is mapping %}{{ book.title }}{% else %}{{ book }}{% endif %}">
                                 <button type="submit">Return</button>
                             </form>
                         </li>
@@ -107,5 +124,21 @@
         <a href="{{ url_for('logout') }}">Logout</a>
     </div>
     <script src="{{ url_for('static', filename='main/script.js') }}"></script>
+    <script>
+        // Convert Unix timestamps to readable format
+        document.addEventListener('DOMContentLoaded', function() {
+            const borrowTimeElements = document.querySelectorAll('.borrow-time');
+            borrowTimeElements.forEach(function(element) {
+                const text = element.textContent;
+                const match = text.match(/\(Borrowed: (\d+)\)/);
+                if (match && match[1]) {
+                    const timestamp = parseInt(match[1]);
+                    const date = new Date(timestamp * 1000); // Convert to milliseconds
+                    const formattedDate = date.toLocaleString();
+                    element.textContent = `(Borrowed: ${formattedDate})`;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
