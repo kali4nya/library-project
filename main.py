@@ -1,9 +1,11 @@
+import dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from rapidfuzz import fuzz
 from classes.library import Library
 from classes.book import Book
 from classes.user import User
 from config import Config
+from dotenv import load_dotenv, dotenv_values
 import json
 import os
 
@@ -14,13 +16,10 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SECURE'] = True
 
 #loading openai API key
-openai_API_key = None
+envfile = dotenv_values(".env")
+openai_API_key = envfile.get("OPENAI_API_KEY")
 ENABLE_AI_BOOK_OVERVIEW = False
-try:
-    with open("openai_API_key.env", "r") as f:
-        openai_API_key = f.read().strip()
-except FileNotFoundError:
-    print("openai_API_key.env file not found. AI book overview will be disabled.")
+
 if openai_API_key:
     ENABLE_AI_BOOK_OVERVIEW = Config.ENABLE_AI_BOOK_OVERVIEW
 #declaring openai model
