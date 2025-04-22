@@ -1,1 +1,2 @@
-openai_API_key.env
+.env
+.idea

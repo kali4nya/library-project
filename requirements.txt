@@ -1,3 +1,4 @@
 Flask
 rapidfuzz
 requests
+python-dotenv
