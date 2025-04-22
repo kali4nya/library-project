@@ -1,13 +1,14 @@
-import dotenv
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from rapidfuzz import fuzz
-from classes.library import Library
-from classes.book import Book
-from classes.user import User
-from config import Config
-from dotenv import load_dotenv, dotenv_values
 import json
 import os
+
+from dotenv import dotenv_values
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from rapidfuzz import fuzz
+
+from classes.book import Book
+from classes.library import Library
+from classes.user import User
+from config import Config
 
 #flask declaration
 app = Flask(__name__)
